@@ -1,14 +1,22 @@
 import Head from 'next/head'
-import Layout, { siteTitle } from '../components/layout'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import { GetStaticProps } from 'next'
+import styles from '../styles/Home.module.scss'
+import { GetStaticProps, NextPage } from 'next'
+import { useRef } from 'react'
+import { StringButton } from '../components/stringButton'
 
-export default function Home() { 
+
+export const Home: NextPage = () => { 
+
+  const buttonLabels = ["Projects", "Experience", "About", "Contact"]
+  const waveDurList = ["48ms", "36ms", "24ms", "12ms"]
+  const stringButtons = buttonLabels.map((val, ind) => {
+    return <StringButton key={ind} ind={ind} text={val} waveDur={waveDurList[ind]}/>
+  })
+
   return (
-    <Layout>
-      Hi :)
-    </Layout>
+    <div className={styles.main}>
+      {stringButtons}
+    </div>
   )
 }
 
@@ -19,3 +27,5 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   }
 }
+
+export default Home 

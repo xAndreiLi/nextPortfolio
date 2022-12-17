@@ -1,0 +1,32 @@
+@use "sass:selector";
+
+.main {
+  width: 80%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #15171A;
+  color: white;
+  margin-left: 10%;
+  margin-right: 10%;
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+    svg {
+      width: 100%;
+      height: 100%;
+      path{
+        stroke: white;
+        stroke-width: 3px;
+        fill: none;
+      }
+    }
+  }
+}
+
+
