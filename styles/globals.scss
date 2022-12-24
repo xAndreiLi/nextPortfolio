@@ -1,7 +1,8 @@
 html, body {
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
+    font-family: 'Merriweather', sans-serif;
     font-size: 4vh;
     margin: 0;
-    background-color: #15171A;
-
+    background-color: #141414;
+    color: #F7F0F5;
 }

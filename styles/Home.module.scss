@@ -1,32 +1,138 @@
 @use "sass:selector";
+@use "sass:math";
 
 .main {
-  width: 80%;
+  position: relative;
   height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #15171A;
-  color: white;
-  margin-left: 10%;
-  margin-right: 10%;
-  .row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    height: 20%;
-    svg {
-      width: 100%;
-      height: 100%;
-      path{
-        stroke: white;
-        stroke-width: 3px;
-        fill: none;
-      }
-    }
+  flex-direction: row;
+  overflow: hidden;
+  font-size: 64px;
+  background-color: #141414;
+}
+
+@keyframes glowAnim {
+  0% {
+    box-shadow: 0 0 150px grey
   }
+  100% {
+    box-shadow: 0 0 100px grey
+  }
+}
+
+.soundHole {
+  position: absolute;
+  bottom: -10vh;
+  left: -25vh;
+  width: 70vh;
+  height: 70vh;
+  border-radius: 100%;
+  border-style: solid;
+  border-color: black;
+  overflow: hidden;
+  z-index: 1;
+  animation: glowAnim 1.5s ease-out infinite alternate;
+}
+
+.scrollBox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.section {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: 75vw;
+  height: 100%;
+}
+
+.content {
+  width: 100%;
+  height: 50vh;
+  padding-left: 1.5rem;
+  font-family: 'Merriweather', serif;
+  h1 {
+    margin: 15vh 0 2vh 0;
+    font-size: 1.5em;
+  }
+}
+
+.fret {
+  width: 100%;
+  height: 47vh;
+  border-style: solid;
+  border-color: white;
+  border-width: 5px;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+  z-index: 0;
+}
+
+@keyframes scrollInAnim {
+  from { width: 0; }
+}
+
+.scrollIn {
+  width: 5em;
+  height: 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: scrollInAnim 2s steps(100,end);
+}
+
+@keyframes fadeInAnim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: fadeInAnim 1s linear 2.5s forwards;
+  p {
+    margin: 0;
+    font-size: .5em;
+  }
+  a {
+    margin: 5vh 1vw 0 0;
+    font-size: .4em;
+    text-decoration: none;
+    color: white;
+  }
+}
+
+.startSection {
+  width: 42vh;
+  flex-shrink: 0;
+}
+
+.stringSvg {
+  position: absolute;
+  top: 90vh;
+  left: 0;
+  width: 35vh;
+  height: 100vw;
+  transform-origin: top left;
+  transform: rotate(-90deg);
+  overflow: visible;
+  z-index: 2;
+}
+
+
+.stringPath {
+  stroke: #CDD5D1;
+  stroke-width: 3px;
+  fill: none;
 }
 
 

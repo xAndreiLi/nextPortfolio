@@ -1,82 +1,103 @@
 import styles from '../styles/Home.module.scss'
 import { GetStaticProps, NextPage } from 'next'
 import { useRef } from 'react'
-import { text } from 'stream/consumers'
+
+// M 0,50 C 1,50 50,80 100,50;
+// M 0,50 C 1,50 50,65 100,50;
+// M 0,50 H 100;
+// M 0,50 C 1,50 50,35 100,50;
+// M 0,50 C 1,50 50,20 100,50;
+// M 0,50 C 1,50 50,0 100,50;
+// M 0,50 C 1,50 50,20 100,50;
+// M 0,50 C 1,50 50,35 100,50;
+// M 0,50 H 100;
 
 interface props {
     ind: number
-    text: string
-    waveDur: string
+    waveRef: string
 }
 
 export const StringButton: NextPage<props> = (props) => {
-    const { ind, text, waveDur } = props
+    const { ind, waveRef } = props
 
     const waveOn = useRef(null)
+    const hoverAnim = useRef<SVGAnimateElement>(null)
     const returnAnim = useRef<SVGAnimateElement>(null)
-    const spline = "0.5 0 0 0.5;"
 
+    const gap = 18
+    const curve = (amp:number) => {
+        return `M ${(ind)*gap},0 C ${(ind)*gap},0 ${amp+(ind*gap)},50 ${ind*gap},100; `
+    }
+
+    const curveAnim = (start:number, end:number) => {
+        var values = ''
+        var times = ''
+        const interval = (end-start)/5
+        for (let i = 0; i <= 5; i++) {
+            values += curve(start+(interval*i))
+            times += (i/5).toFixed(3) + '; '
+        }
+        return [values, times]
+    }
+
+    const waveAnim = () => {
+        var values = curve(2) + curve(1) + curve(0)
+        for (let i = 12; i>0; i--) {
+            values += curveAnim(0,-i)[0]
+            values += curveAnim(-i,0)[0]
+            values += curveAnim(0,i)[0]
+            values += curveAnim(i,0)[0]
+        }
+        var times = ''
+        const count = values.split(';').length-1
+        for (let i = 0; i < count; i++) {
+            times += (i/(count-1)).toFixed(3) + '; '
+        }
+        return [values, times]
+    }
+    
     return (
-        <div className={styles.row}>
-            <p>{text}</p>
-            <svg
-                viewBox='0 0 100 100'
-                xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio='none'
-            >
-                <path vectorEffect="non-scaling-stroke" d="
-                    M 0,50 H 100">
-                    <animate attributeName='d' dur="20ms"
-                        values='
-                            M 0,50 H 100;
-                            M 0,50 C 1,50 50,60 100,50;
-                            M 0,50 C 1,50 50,70 100,50;
-                            M 0,50 C 1,50 50,80 100,50;'
-                        calcMode="spline" fill='freeze'
-                        keyTimes="0; 0.33; 0.66; 1"
-                        begin={`string${ind}.mouseenter`}
-                        end={`string${ind}.mouseleave; string${ind}.mousedown`}
-                    />
+        <g>
+            <path className={styles.stringPath}
+                vectorEffect="non-scaling-stroke" d={curve(0)}>
+                <animate attributeName='d' dur="100ms" ref={hoverAnim}
+                    values={curveAnim(0,3)[0]}
+                    calcMode="spline" fill='freeze'
+                    keyTimes={curveAnim(0,3)[1]}
+                    begin={`indefinite`}
+                    end={`string${ind}.mouseleave; string${ind}.mousedown`}
+                />
 
-                    <animate attributeName='d' dur="20ms" ref={returnAnim}
-                        values='
-                M 0,50 C 1,50 2,80 100,50;
-                M 0,50 C 1,50 2,70 100,50;
-                M 0,50 C 1,50 2,60 100,50;
-                M 0,50 H 100;'
-                        calcMode="spline" fill='freeze'
-                        keyTimes="0; 0.33; 0.66; 1"
-                        begin={`string${ind}wave.repeat(159)`}
-                        end={`string${ind}.mouseenter`}
-                    />
+                <animate attributeName='d' dur="100ms" ref={returnAnim}
+                    values={curveAnim(3,0)[0]}
+                    calcMode="spline" fill='freeze'
+                    keyTimes={curveAnim(3,0)[1]}
+                    begin={`indefinite`}
+                    end={`string${ind}.mouseenter`}
+                />
 
-                    <animate attributeName='d' dur={waveDur} id={`string${ind}wave`}
-                        values='
-                M 0,50 C 1,50 50,80 100,50;
-                M 0,50 C 1,50 50,65 100,50;
-                M 0,50 H 100;
-                M 0,50 C 1,50 50,35 100,50;
-                M 0,50 C 1,50 50,20 100,50;
-                M 0,50 C 1,50 50,0 100,50;
-                M 0,50 C 1,50 50,20 100,50;
-                M 0,50 C 1,50 50,35 100,50;
-                M 0,50 H 100;'
-                        calcMode="spline" fill='freeze' repeatDur="2s"
-                        keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1"
-                        keySplines={spline.repeat(8)}
-                        begin={`string${ind}.mousedown`} onAnimationEnd={() => {
-                            waveOn.current = false
-                        }}
-                    />
-                </path>
-                <rect x="-10" width="110" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
-                    onMouseDown={() => {
-                        waveOn.current = true
-                    }}
-                    onMouseLeave={() => {
-                        if (!waveOn.current) returnAnim.current.beginElement()
-                    }} />
-            </svg>
-        </div>
+                <animate attributeName='d' dur='1000ms' ref={waveRef}
+                    id={`string${ind}wave`}
+                    values={waveAnim()[0]}
+                    calcMode="spline" fill='freeze'
+                    keyTimes={waveAnim()[1]}
+                    begin={`string${ind}.mousedown`}
+                />
+            </path>
+            <rect x={(ind*gap)-8} width="16" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
+                onMouseDown={() => {
+                    waveOn.current = true
+                    setTimeout(()=>{
+                        waveOn.current = false
+                    }, 600)
+                }}
+                onMouseEnter={() => {
+                    if (!waveOn.current) hoverAnim.current.beginElement()
+                }} 
+                onMouseLeave={() => {
+                    if (!waveOn.current) returnAnim.current.beginElement()
+                }}
+                />
+        </g>
     )
 }
