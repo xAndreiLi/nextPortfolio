@@ -27,14 +27,9 @@ export const Home: NextPage = () => {
     });
   }
 
-  const [letters, setLetters] = useState("");
-  const introText = letters.split("").map((c, ind) => {
-    return <span key={ind} className="fadeIn">{c}</span>
-  })
-
   useEffect(() => {
     pluckSeq([5,4,3,2,1,0], [250,250,250,250,250,250])
-  }, [strings])
+  })
 
   return (
     <div className={styles.main}>
