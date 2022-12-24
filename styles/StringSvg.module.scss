@@ -1,0 +1,17 @@
+.stringPath {
+    stroke: #CDD5D1;
+    stroke-width: 3px;
+    fill: none;
+  }
+  
+  .stringSvg {
+    position: absolute;
+    top: 90vh;
+    left: 0;
+    width: 35vh;
+    height: 100vw;
+    transform-origin: top left;
+    transform: rotate(-90deg);
+    overflow: visible;
+    z-index: 2;
+  }

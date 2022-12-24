@@ -1,4 +1,4 @@
-import styles from '../styles/Home.module.scss'
+import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
 import { useRef } from 'react'
 
@@ -84,7 +84,7 @@ export const StringButton: NextPage<props> = (props) => {
                     begin={`string${ind}.mousedown`}
                 />
             </path>
-            <rect x={(ind*gap)-8} width="16" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
+            <rect x={(ind*gap)-2} width="16" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
                 onMouseDown={() => {
                     waveOn.current = true
                     setTimeout(()=>{

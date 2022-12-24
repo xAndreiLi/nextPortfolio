@@ -4,63 +4,58 @@ import { GetStaticProps, NextPage } from 'next'
 import { useRef, useState, useEffect } from 'react'
 import { StringButton } from '../components/stringButton'
 import { Section } from '../components/section'
+import { StringSvg } from '../components/stringSvg'
 
 
-export const Home: NextPage = () => { 
-  const stringRef = []
-  for (let i = 0; i < 6; i++) {
-    const ref = useRef<SVGAnimateElement>(null)
-    stringRef.push(ref)
-  }
-  const strings = stringRef.map((val, ind) => {
-    return <StringButton key={ind} ind={ind} waveRef={val}/>
-  })
+export const Home: NextPage = () => {
 
-  const pluck = (ind: number, delay: number) => {
-    setTimeout(() => {stringRef[ind].current.beginElement()}, delay)
-  }
-  const pluckSeq = (seq:Array<number>, interval:Array<number>) => {
-    let time = 0
-    seq.forEach((i, ind) => {
-      pluck(i, time)
-      time += interval[ind]
-    });
-  }
-
+  const mainRef = useRef(null);
+  const scrollRef = useRef(null);
   useEffect(() => {
-    pluckSeq([5,4,3,2,1,0], [250,250,250,250,250,250])
+    const main = mainRef.current
+    const scroll = scrollRef.current
+    if (!scroll || !main) return;
+    const onScroll = (e) => {
+      if (e.deltaY == 0) return;
+      e.preventDefault()
+      scroll.scrollTo({
+        left: scroll.scrollLeft + e.deltaY * .6,
+      })
+    }
+    main.addEventListener("wheel", onScroll)
+    return () => main.removeEventListener("wheel", onScroll);
   })
 
   return (
-    <div className={styles.main}>
+    <div className={styles.main} ref={mainRef}>
       <Head>
         <title>Andrei Li: Portfolio</title>
         <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet"></link>
       </Head>
-      <div 
-        className={styles.soundHole}
-        style={{
-          boxShadow: "0 0 150px grey",
-          backgroundImage: "radial-gradient(black 35%, grey 140%)"
-        }}
-      />
-      <svg
-        className={styles.stringSvg}
-        viewBox='0 0 100 100'
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio='none'
-      >
-        {strings}
-      </svg>
-      <div className={styles.scrollBox}>
-        <div className={styles.startSection}/>
-        <Section>
-          <h1 className={styles.scrollIn}>Andrei Li</h1>
+      <StringSvg/>
+      <div className={styles.scrollBox} ref={scrollRef}>
+        <div className={styles.startSection}>
+          <div 
+            className={styles.soundHole}
+            style={{
+              boxShadow: "0 0 150px grey",
+              backgroundImage: "radial-gradient(black 35%, grey 140%)"
+            }}
+          />
+        </div>
+        <Section buttons={(
           <div className={styles.fadeIn}>
-            <p>Developer - Musician - Designer</p>
+            <a>home</a>
+            <a>projects</a>
+            <a>experience</a>
             <a href='https://github.com/xAndreiLi'>github</a>
             <a href='https://www.linkedin.com/in/andrei-li-67870b201/'>linkedin</a>
             <a href='mailto: liandrei2000@gmail.com'>email</a>
+          </div>
+        )}>
+          <h1 className={styles.scrollIn}>Andrei Li</h1>
+          <div className={styles.fadeIn}>
+            <p>Developer - Musician - Designer</p>
           </div>
         </Section>
         <Section>
