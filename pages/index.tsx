@@ -8,16 +8,16 @@ import { StringSvg } from '../components/stringSvg'
 
 
 export const Home: NextPage = () => {
-
-  const mainRef = useRef(null);
-  const scrollRef = useRef(null);
+  const mainRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const holeRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const main = mainRef.current
     const scroll = scrollRef.current
     if (!scroll || !main) return;
     const onScroll = (e) => {
-      if (e.deltaY == 0) return;
       e.preventDefault()
+      if (e.deltaY == 0) return;
       scroll.scrollTo({
         left: scroll.scrollLeft + e.deltaY * .6,
       })
@@ -30,18 +30,23 @@ export const Home: NextPage = () => {
     <div className={styles.main} ref={mainRef}>
       <Head>
         <title>Andrei Li: Portfolio</title>
-        <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet"></link>
       </Head>
-      <StringSvg/>
+      <StringSvg
+        mainRef={mainRef}
+        scrollRef={scrollRef}
+        holeRef={holeRef}
+      />
       <div className={styles.scrollBox} ref={scrollRef}>
         <div className={styles.startSection}>
           <div 
             className={styles.soundHole}
-            style={{
-              boxShadow: "0 0 150px grey",
-              backgroundImage: "radial-gradient(black 35%, grey 140%)"
-            }}
-          />
+          >
+            <input type="checkbox" ref={holeRef}
+              onClick={()=>{
+                setTimeout(()=>{holeRef.current.checked = false}, 150)
+              }}
+            />
+          </div>
         </div>
         <Section buttons={(
           <div className={styles.fadeIn}>
@@ -55,7 +60,7 @@ export const Home: NextPage = () => {
         )}>
           <h1 className={styles.scrollIn}>Andrei Li</h1>
           <div className={styles.fadeIn}>
-            <p>Developer - Musician - Designer</p>
+            <p>Designer | Researcher | Musician</p>
           </div>
         </Section>
         <Section>
@@ -78,11 +83,3 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export default Home 
-
-// <h1 className={styles.scrollIn}>Andrei Li</h1>
-//             <div className={styles.fadeIn}>
-//               <p>Developer - Musician - Designer</p>
-//               <a href='https://github.com/xAndreiLi'>github</a>
-//               <a href='https://www.linkedin.com/in/andrei-li-67870b201/'>linkedin</a>
-//               <a href='mailto: liandrei2000@gmail.com'>email</a>
-//             </div>

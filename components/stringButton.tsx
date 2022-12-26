@@ -1,24 +1,15 @@
 import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
-import { useRef } from 'react'
-
-// M 0,50 C 1,50 50,80 100,50;
-// M 0,50 C 1,50 50,65 100,50;
-// M 0,50 H 100;
-// M 0,50 C 1,50 50,35 100,50;
-// M 0,50 C 1,50 50,20 100,50;
-// M 0,50 C 1,50 50,0 100,50;
-// M 0,50 C 1,50 50,20 100,50;
-// M 0,50 C 1,50 50,35 100,50;
-// M 0,50 H 100;
+import { useRef, MutableRefObject } from 'react'
 
 interface props {
     ind: number
-    waveRef: string
+    waveRef: MutableRefObject<SVGAnimateElement>
+    onClick: Function
 }
 
 export const StringButton: NextPage<props> = (props) => {
-    const { ind, waveRef } = props
+    const { ind, waveRef, onClick } = props
 
     const waveOn = useRef(null)
     const hoverAnim = useRef<SVGAnimateElement>(null)
@@ -41,8 +32,8 @@ export const StringButton: NextPage<props> = (props) => {
     }
 
     const waveAnim = () => {
-        var values = curve(2) + curve(1) + curve(0)
-        for (let i = 12; i>0; i--) {
+        var values = curve(-3) + curve(-6) + curve(-12) + curve(-6)
+        for (let i = 10; i>0; i--) {
             values += curveAnim(0,-i)[0]
             values += curveAnim(-i,0)[0]
             values += curveAnim(0,i)[0]
@@ -61,9 +52,9 @@ export const StringButton: NextPage<props> = (props) => {
             <path className={styles.stringPath}
                 vectorEffect="non-scaling-stroke" d={curve(0)}>
                 <animate attributeName='d' dur="100ms" ref={hoverAnim}
-                    values={curveAnim(0,3)[0]}
+                    values={curveAnim(0,-3)[0]}
                     calcMode="spline" fill='freeze'
-                    keyTimes={curveAnim(0,3)[1]}
+                    keyTimes={curveAnim(0,-3)[1]}
                     begin={`indefinite`}
                     end={`string${ind}.mouseleave; string${ind}.mousedown`}
                 />
@@ -76,7 +67,7 @@ export const StringButton: NextPage<props> = (props) => {
                     end={`string${ind}.mouseenter`}
                 />
 
-                <animate attributeName='d' dur='1000ms' ref={waveRef}
+                <animate attributeName='d' dur='400ms' ref={waveRef}
                     id={`string${ind}wave`}
                     values={waveAnim()[0]}
                     calcMode="spline" fill='freeze'
@@ -86,6 +77,7 @@ export const StringButton: NextPage<props> = (props) => {
             </path>
             <rect x={(ind*gap)-2} width="16" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
                 onMouseDown={() => {
+                    onClick(ind)
                     waveOn.current = true
                     setTimeout(()=>{
                         waveOn.current = false

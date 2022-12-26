@@ -1,6 +1,12 @@
 @use "sass:selector";
 @use "sass:math";
 
+$background-color: #23395B;
+$light-color: #8EA8C3;
+$dark-color: #161925;
+$text-color: #FDFFFC;
+
+
 .main {
   position: relative;
   height: 100vh;
@@ -8,16 +14,8 @@
   flex-direction: row;
   overflow: hidden;
   font-size: 8vh;
-  background-color: #141414;
-}
-
-@keyframes glowAnim {
-  0% {
-    box-shadow: 0 0 150px grey
-  }
-  100% {
-    box-shadow: 0 0 75px grey
-  }
+  background-color: $background-color;
+  color: $text-color;
 }
 
 .startSection {
@@ -28,6 +26,16 @@
   overflow-y: clip;
 }
 
+@keyframes glowAnim {
+  0% {
+    box-shadow: 0 0 50px $light-color
+  }
+  100% {
+    box-shadow: 0 0 150px $light-color
+    
+  }
+}
+
 .soundHole {
   position: relative;
   width: 70vh;
@@ -35,10 +43,38 @@
   transform: translate(-25vh, 38vh);
   border-radius: 100%;
   border-style: solid;
-  border-color: black;
+  border-color: $dark-color;
   overflow: hidden;
-  z-index: 1;
+  box-shadow: 0 0 50px $light-color;
   animation: glowAnim 3s linear infinite alternate;
+  background-image: radial-gradient($dark-color 10%, $light-color 130%);
+  z-index: 1;
+
+  input {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    appearance: none;
+    background-image: radial-gradient($dark-color 35%, $light-color 125%);
+    z-index: 2;
+
+    transition: 1s;
+    opacity: 1;
+    &:hover{
+      transition: .5s .1s;
+      opacity: .1;
+    }
+    &:checked{
+      transition: .15s;
+      opacity: .5;
+    }
+    
+  }
+
+  &:hover {
+    transition: 2s;
+    //box-shadow: 0 0 50px grey;
+  }
 }
 
 .scrollBox {
