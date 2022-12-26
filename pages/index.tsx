@@ -53,9 +53,9 @@ export const Home: NextPage = () => {
             <a>home</a>
             <a>projects</a>
             <a>experience</a>
-            <a href='https://github.com/xAndreiLi'>github</a>
-            <a href='https://www.linkedin.com/in/andrei-li-67870b201/'>linkedin</a>
-            <a href='mailto: liandrei2000@gmail.com'>email</a>
+            <a href='https://github.com/xAndreiLi'>about</a>
+            <a href='https://www.linkedin.com/in/andrei-li-67870b201/'>contact</a>
+            <a href='mailto: liandrei2000@gmail.com'>more</a>
           </div>
         )}>
           <h1 className={styles.scrollIn}>Andrei Li</h1>
@@ -68,6 +68,12 @@ export const Home: NextPage = () => {
         </Section>
         <Section>
           <h1>Experience</h1>
+        </Section>
+        <Section>
+          <h1>About</h1>
+        </Section>
+        <Section>
+          <h1>Contact</h1>
         </Section>
       </div>
     </div>

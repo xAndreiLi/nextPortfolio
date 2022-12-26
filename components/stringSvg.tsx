@@ -17,9 +17,26 @@ export const StringSvg: NextPage<props> = (props) => {
         stringRef.push(ref)
     }
 
+
+
     const onClick = (ind?: number) => {
         holeRef.current.click()
         setTimeout(()=>{holeRef.current.checked = false}, 150)
+
+        if (ind) {
+            console.log(ind)
+            const width = scrollRef.current.scrollWidth
+            const vw = mainRef.current.clientWidth / 100
+            scrollRef.current.scrollTo({
+                left: vw * 90 * ind + (vw*20),
+                behavior: "smooth"
+            })
+        } else if (ind == 0){
+            scrollRef.current.scrollTo({
+                left: 0,
+                behavior: "smooth"
+            })
+        }
     }
 
     const strings = stringRef.map((val, ind) => {
@@ -47,7 +64,7 @@ export const StringSvg: NextPage<props> = (props) => {
 
     const onScroll = (e: WheelEvent) => {
         if ((e.deltaY == 0) || (timeouts.length)) return;
-        pluckSeq([5,4,3,2,1,0,1,2,3], 400)
+        pluckSeq([0,1,2,3,4,5,4,3,2], 400)
         let currScroll = scrollRef.current.scrollLeft
         let timer = setInterval(() => {
             if (scrollRef.current.scrollLeft == currScroll) {
@@ -64,7 +81,7 @@ export const StringSvg: NextPage<props> = (props) => {
 
     useEffect(() => {
         if(!mainRef.current || !holeRef.current) return;
-        pluckSeq([5,4,3,2,1,0], 250)
+        pluckSeq([0,1,2,3,4,5], 250)
         mainRef.current.addEventListener("wheel", onScroll)
     })
 

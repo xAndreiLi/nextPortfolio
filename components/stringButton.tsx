@@ -75,7 +75,7 @@ export const StringButton: NextPage<props> = (props) => {
                     begin={`string${ind}.mousedown`}
                 />
             </path>
-            <rect x={(ind*gap)-2} width="16" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
+            <rect x={(ind*gap)-12} width="16" height="100" fill='none' id={`string${ind}`} pointerEvents="all"
                 onMouseDown={() => {
                     onClick(ind)
                     waveOn.current = true
