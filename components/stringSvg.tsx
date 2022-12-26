@@ -17,7 +17,7 @@ export const StringSvg: NextPage<props> = (props) => {
         stringRef.push(ref)
     }
 
-    const onClick = (ind: number) => {
+    const onClick = (ind?: number) => {
         holeRef.current.click()
         setTimeout(()=>{holeRef.current.checked = false}, 150)
     }
