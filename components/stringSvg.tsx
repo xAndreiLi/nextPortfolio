@@ -1,6 +1,11 @@
-import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
 import { useRef, useEffect, MutableRefObject } from 'react'
+
+import styles from '../styles/StringSvg.module.scss'
+import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { setScroll, selectScroll } from '../app/scrollSlice'
+import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
+
 import { StringButton } from './stringButton'
 
 interface props {
@@ -11,27 +16,32 @@ interface props {
 
 export const StringSvg: NextPage<props> = (props) => {
     const { mainRef, scrollRef, holeRef } = props
+
+    const scroll = useAppSelector(selectScroll)
+    const view = useAppSelector(selectView)
+    const dispatch = useAppDispatch()
+
     const stringRef: Array<MutableRefObject<SVGAnimateElement>> = []
     for (let i = 0; i < 6; i++) {
         const ref = useRef<SVGAnimateElement>()
         stringRef.push(ref)
     }
 
-
-
     const onClick = (ind?: number) => {
         holeRef.current.click()
         setTimeout(()=>{holeRef.current.checked = false}, 150)
 
         if (ind) {
-            console.log(ind)
-            const width = scrollRef.current.scrollWidth
-            const vw = mainRef.current.clientWidth / 100
+            console.log(view)
+            const vw = view.width / 100
+            const scrollAmt = vw * 90 * ind
+            dispatch(setScroll(scrollAmt))
             scrollRef.current.scrollTo({
-                left: vw * 90 * ind + (vw*20),
+                left: scrollAmt + (vw*15),
                 behavior: "smooth"
             })
         } else if (ind == 0){
+            dispatch(setScroll(0))
             scrollRef.current.scrollTo({
                 left: 0,
                 behavior: "smooth"
@@ -83,7 +93,7 @@ export const StringSvg: NextPage<props> = (props) => {
         if(!mainRef.current || !holeRef.current) return;
         pluckSeq([0,1,2,3,4,5], 250)
         mainRef.current.addEventListener("wheel", onScroll)
-    })
+    }, [mainRef])
 
     return (
         <svg
