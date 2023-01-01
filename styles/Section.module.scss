@@ -26,7 +26,7 @@
     height: 47vh;
     display: flex;
     flex-direction: column;
-    padding: 1.8vh 0 0 4vh;
+    padding: 1.8vh 0 0 0;
     border-style: solid;
     border-color: white;
     border-width: 5px;
@@ -37,11 +37,15 @@
     div {
         display: inherit;
         flex-direction: inherit;
-    }
-    a {
-        margin-top: 1.2vh;
-        font-size: .5em;
-        text-decoration: none;
-        color: inherit;
+        div {
+          height: 6.5vh;
+          margin-top: 0vh;
+          padding-left: 3vw;
+          font-size: .5em;
+          text-decoration: none;
+          color: inherit;
+          pointer-events: all;
+          overflow: hidden;
+        }
     }
   }

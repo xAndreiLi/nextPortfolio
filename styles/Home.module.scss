@@ -40,7 +40,7 @@ $text-color: #FDFFFC;
   box-shadow: 0 0 50px $light-color;
   animation: glowAnim 3s linear infinite alternate;
   background-image: radial-gradient($dark-color 10%, $light-color 130%);
-  z-index: 2;
+  z-index: 11;
 
   input {
     width: 100%;
@@ -76,13 +76,15 @@ $text-color: #FDFFFC;
 }
 
 .scrollBox {
-  width: 100%;
+  position: relative;
+  width: fit-content;
   height: 100%;
   display: flex;
   flex-direction: row;
   overflow: auto;
   justify-content: flex-start;
   align-items: flex-start;
+  transition: .2s;
 }
 
 .startSection {
