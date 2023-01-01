@@ -11,7 +11,10 @@ interface ViewState {
 }
 
 const initialState: ViewState = {
-    value: {width: 0, height: 0}
+    value: {
+        width: typeof window !== 'undefined' ? window.innerWidth : null, 
+        height: typeof window !== 'undefined' ? window.innerHeight : null
+    }
 }
 
 export const viewSlice = createSlice({

@@ -9,17 +9,13 @@ import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 interface props {
     children?: any
     buttons?: Array<string>
-    ind?: number
 }
 
 export const Section: NextPage<props> = (props) => {
-    const {children, buttons, ind} = props
+    const {children, buttons} = props
 
-    const scroll = useAppSelector(selectScroll)
     const view = useAppSelector(selectView)
     const dispatch = useAppDispatch()
-    const vw = view.width / 100
-    const offset = ind*vw*90
 
     let buttonElems = []
     if (buttons) {
@@ -38,7 +34,7 @@ export const Section: NextPage<props> = (props) => {
           <div className={styles.fret}>
             <div style={{
               transition: '.5s ease-out',
-              transform: `translateX(${scroll-offset}px)`
+              transform: `translateX(${0}px)`
             }}>
                 {buttonElems}
             </div>
