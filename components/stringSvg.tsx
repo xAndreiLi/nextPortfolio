@@ -36,9 +36,10 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     return <StringPath key={ind} ind={ind} ref={val} />
   })
 
-  let timeouts = useRef<Array<NodeJS.Timeout>>([]).current
+  const timeoutRef = useRef<Array<NodeJS.Timeout>>([])
 
   const pluck = (ind: number, delay: number) => {
+    const timeouts = timeoutRef.current
     return setTimeout(() => {
       const string = stringRefs.current[ind].current
       if (!string || !holeRef?.current) return;
@@ -48,6 +49,7 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     }, delay)
   }
   const pluckSeq = (seq: Array<number>, interval: number, delay?: number) => {
+    const timeouts = timeoutRef.current
     let time = 0
     if (delay) time = delay
     seq.forEach((i) => {
@@ -64,6 +66,7 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
 
     const onScroll = (e: WheelEvent) => {
       const scroll = scrollRef?.current
+      const timeouts = timeoutRef.current
       if ((e.deltaY == 0) || timeouts.length || !scroll) return;
   
       pluckSeq([0, 1, 2, 3, 4, 5, 4, 3, 2], 400)
@@ -74,10 +77,10 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
           timeouts.forEach((t) => {
             clearTimeout(t)
           })
-          timeouts = []
+          timeouts.length = 0
         }
         currScroll = scroll.scrollLeft;
-      }, 500)
+      }, 200)
     }
 
     pluckSeq([0, 1, 2, 3, 4, 5], 250, 2000)
@@ -85,7 +88,7 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     return (() => {
       main.removeEventListener("wheel", onScroll)
     })
-  }, [mainRef, holeRef, ])
+  }, [mainRef])
 
   useImperativeHandle(ref, () => ({
     get stringRefs() {
@@ -104,6 +107,5 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     </svg>
   )
 }
-//StringSvg.displayName = 'StringSvg'
 
 export const StringSvg = forwardRef<StringSvgType, Props>(StringSvgComp)
