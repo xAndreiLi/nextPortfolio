@@ -7,7 +7,7 @@ export interface Button {
 }
 
 interface SectionDataType {
-  name: string | null;
+  name?: string | undefined;
   content: JSX.Element;
   buttons: Array<Button>
 }
@@ -39,7 +39,6 @@ const createButtons = (names:Array<string>,
 
 export const sectionData: Array<SectionDataType> = [
   {
-    name: null,
     content: (<>
       <h1 className={styles.scrollIn}>Andrei Li</h1>
       <div className={styles.fadeIn}>

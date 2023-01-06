@@ -3,8 +3,8 @@
 .stringPath {
   stroke: Home.$light-color;
   stroke-width: 3px;
-  stroke-dasharray: 1200;
-  stroke-dashoffset: -1200;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: -2000;
   fill: none;
 
   @for $i from 1 through 6 {

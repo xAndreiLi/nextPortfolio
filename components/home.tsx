@@ -3,6 +3,7 @@ import { GetStaticProps, NextPage } from 'next'
 import {
   useRef, useState, useEffect, useLayoutEffect,
   createContext,
+  WheelEventHandler, WheelEvent, RefObject,
 } from 'react'
 
 import styles from '../styles/Home.module.scss'
@@ -11,10 +12,17 @@ import { setScroll, selectScroll } from '../app/scrollSlice'
 import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 
 import { Section } from './section'
-import { StringSvg, StringSvgType } from './stringSvg'
+import { StringSvgType, StringSvg } from './stringSvg'
 import { sectionData } from '../data/sections'
 
-export const HomeContext = createContext(null)
+interface refDataType {
+  mainRef?: RefObject<HTMLDivElement>
+  scrollRef?: RefObject<HTMLDivElement>
+  holeRef?: RefObject<HTMLInputElement>
+  stringRef?: RefObject<StringSvgType>
+}
+
+export const HomeContext = createContext<refDataType>({})
 
 export const Home: NextPage = () => {
   const mainRef = useRef<HTMLDivElement>(null)
@@ -25,51 +33,46 @@ export const Home: NextPage = () => {
   const [visible, setVisible] = useState(0)
 
 
-  const refData = {
-    mainRef: mainRef, scrollRef: scrollRef,
-    holeRef: holeRef, stringRef: stringRef
+  const refData: refDataType = {
+    mainRef, scrollRef,
+    holeRef, stringRef
   }
 
   const scroll = useAppSelector(selectScroll)
   const view = useAppSelector(selectView)
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
+  const onScroll: WheelEventHandler<HTMLDivElement> = (e: WheelEvent<HTMLDivElement>) => {
     const mainDiv = mainRef.current
     const scrollDiv = scrollRef.current
     if (!mainDiv || !scrollDiv) return;
 
-    const onScroll = (e: WheelEvent) => {
-      e.preventDefault()
-      if (e.deltaY == 0) return;
-      let scrollTo = scrollDiv.scrollLeft + e.deltaY * .2
-      if (scrollTo < 0) scrollTo = 0;
-      scrollDiv.scrollTo({
-        left: scrollTo,
-      })
+    e.preventDefault()
+    if (e.deltaY == 0) return;
+    let scrollTo = scrollDiv.scrollLeft + e.deltaY
+    if (scrollTo < 0) scrollTo = 0;
+    scrollDiv.scrollTo({
+      left: scrollTo,
+    })
 
-      const vw = view.width / 100
-      const vh = view.height / 100
-      const startWidth = 42*vh
-      const secWidth = 90*vw
+    const vw = view.width / 100
+    const vh = view.height / 100
+    const startWidth = 42*vh
+    const secWidth = 90*vw
 
-      const currSec = Math.trunc(Math.abs(
-        ((scrollTo-startWidth) / secWidth)))
-      if (visible != currSec) {
-        setVisible(currSec)
-      }
-
-      console.log(currSec)
-
-      dispatch(setScroll(scrollTo))
-
+    const currSec = Math.trunc(Math.abs(
+      ((scrollTo-startWidth) / secWidth)))
+    if (visible != currSec) {
+      setVisible(currSec)
     }
 
-    mainDiv.addEventListener("wheel", onScroll)
-    return () => mainDiv.removeEventListener("wheel", onScroll)
-  }, [])
+    console.log(currSec)
 
-  useLayoutEffect(() => {
+    dispatch(setScroll(scrollTo))
+
+  }
+
+  useEffect(() => {
     const onResize = () => {
       dispatch(setViewWidth(window.innerWidth))
       dispatch(setViewHeight(window.innerHeight))
@@ -95,7 +98,9 @@ export const Home: NextPage = () => {
   })
 
   return (
-    <div className={styles.main} ref={mainRef}>
+    <div className={styles.main} ref={mainRef}
+      onWheel={onScroll}
+    >
       <Head>
         <title>Andrei Li: Portfolio</title>
       </Head>
@@ -108,7 +113,10 @@ export const Home: NextPage = () => {
             <div className={styles.soundHole}>
               <input type="checkbox" ref={holeRef}
                 onClick={() => {
-                  setTimeout(() => { holeRef.current.checked = false }, 150)
+                  setTimeout(() => {
+                    if (!holeRef.current) return;
+                    holeRef.current.checked = false
+                  }, 150)
                 }}
               />
             </div>

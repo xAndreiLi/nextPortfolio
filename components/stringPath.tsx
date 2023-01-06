@@ -1,6 +1,6 @@
 import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, MutableRefObject, forwardRef, useImperativeHandle } from 'react'
+import { useRef, MutableRefObject, forwardRef, useImperativeHandle, ForwardedRef } from 'react'
 
 export interface StringPathType {
     hover: Function
@@ -18,7 +18,7 @@ interface AnimType {
     splines: string
 }
 
-export const StringPath = forwardRef<StringPathType, Props>((props, ref) => {
+const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
     const { ind } = props
 
     const waveOn = useRef(false)
@@ -32,7 +32,7 @@ export const StringPath = forwardRef<StringPathType, Props>((props, ref) => {
         return `M ${(ind) * gap},0 C ${(ind) * gap},0 ${amp + (ind * gap)},50 ${ind * gap},100`
     }
 
-    const curveAnim = (start: number, end: number) => {
+    const curveAnim = (start: number, end: number): AnimType => {
         var values = ''
         var times = ''
         var splines = '0 0 1 1; '
@@ -47,7 +47,7 @@ export const StringPath = forwardRef<StringPathType, Props>((props, ref) => {
         return {values, times, splines}
     }
 
-    const waveAnim = () => {
+    const waveAnim = (): AnimType => {
         var values = curve(3) + curve(6) + curve(12) + curve(6)
         for (let i = 10; i > 0; i--) {
             values += curveAnim(0, -i).values + '; '
@@ -68,19 +68,23 @@ export const StringPath = forwardRef<StringPathType, Props>((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         hover: () => {
-            if (waveOn.current) return;
-            hoverRef.current.beginElement()
+            const hoverAnim = hoverRef.current
+            if (waveOn.current || !hoverAnim) return;
+            hoverAnim.beginElement()
             isHovered.current = true
         },
         unhover: () => {
-            if (waveOn.current || !isHovered.current) return;
-            returnRef.current.beginElement()
-            
+            const unhover = returnRef.current
+            if (waveOn.current || !isHovered.current || !unhover) return;
+            unhover.beginElement()
+            isHovered.current = false
         },
         click: () => {
+            const click = waveRef.current
+            if (!click) return;
             waveOn.current = true
             isHovered.current = false
-            waveRef.current.beginElement()
+            click.beginElement()
             setTimeout(() => waveOn.current = false, 350)
         }
     }))
@@ -117,4 +121,6 @@ export const StringPath = forwardRef<StringPathType, Props>((props, ref) => {
             />
         </path>
     )
-})
+}
+
+export const StringPath = forwardRef<StringPathType, Props>(StringPathComp)

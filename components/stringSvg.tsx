@@ -1,7 +1,10 @@
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, useEffect, MutableRefObject, 
+import {
+  useRef, useEffect, MutableRefObject,
   useImperativeHandle, forwardRef, useState,
-  useContext
+  useContext,
+  RefObject,
+  ForwardedRef
 } from 'react'
 
 import styles from '../styles/StringSvg.module.scss'
@@ -13,18 +16,18 @@ import { StringPath, StringPathType } from './stringPath'
 import { HomeContext } from './home'
 
 export interface StringSvgType {
-  stringRefs: MutableRefObject<StringPathType>[]
+  stringRefs: RefObject<StringPathType>[] | undefined
 }
 
 interface Props {
 
 }
 
-export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
+const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
   const { mainRef, scrollRef, holeRef } = useContext(HomeContext)
 
   const stringRefs = useRef([
-    useRef(null), useRef(null),
+    useRef<StringPathType>(null), useRef(null),
     useRef(null), useRef(null),
     useRef(null), useRef(null)
   ])
@@ -33,12 +36,12 @@ export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
     return <StringPath key={ind} ind={ind} ref={val} />
   })
 
-  let timeouts = useRef([]).current
+  let timeouts = useRef<Array<NodeJS.Timeout>>([]).current
 
   const pluck = (ind: number, delay: number) => {
     return setTimeout(() => {
       const string = stringRefs.current[ind].current
-      if (!string) return;
+      if (!string || !holeRef?.current) return;
       string.click()
       holeRef.current.click()
       timeouts.shift()
@@ -53,36 +56,40 @@ export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
     });
   }
 
-  const onScroll = (e: WheelEvent) => {
-    if ((e.deltaY == 0) || (timeouts.length)) return;
-
-    pluckSeq([0, 1, 2, 3, 4, 5, 4, 3, 2], 400)
-    let currScroll = scrollRef.current.scrollLeft
-    let timer = setInterval(() => {
-      if (scrollRef.current.scrollLeft == currScroll) {
-        clearInterval(timer)
-        timer = null
-        timeouts.forEach((t) => {
-          clearTimeout(t)
-        })
-        timeouts = []
-      }
-      currScroll = scrollRef.current.scrollLeft;
-    }, 500)
-  }
 
   useEffect(() => {
-    if (!mainRef.current || !holeRef.current) return;
+    const main = mainRef?.current
+    const hole = holeRef?.current
+    if (!main || !hole) return;
+
+    const onScroll = (e: WheelEvent) => {
+      const scroll = scrollRef?.current
+      if ((e.deltaY == 0) || timeouts.length || !scroll) return;
+  
+      pluckSeq([0, 1, 2, 3, 4, 5, 4, 3, 2], 400)
+      let currScroll = scrollRef.current.scrollLeft
+      let timer = setInterval(() => {
+        if (scroll.scrollLeft == currScroll) {
+          clearInterval(timer)
+          timeouts.forEach((t) => {
+            clearTimeout(t)
+          })
+          timeouts = []
+        }
+        currScroll = scroll.scrollLeft;
+      }, 500)
+    }
+
     pluckSeq([0, 1, 2, 3, 4, 5], 250, 2000)
-    mainRef.current.addEventListener("wheel", onScroll)
+    main.addEventListener("wheel", onScroll)
     return (() => {
-      mainRef.current.removeEventListener("wheel", onScroll)
+      main.removeEventListener("wheel", onScroll)
     })
-  }, [mainRef])
+  }, [mainRef, holeRef, ])
 
   useImperativeHandle(ref, () => ({
     get stringRefs() {
-      return stringRefs.current
+      if (stringRefs.current) return stringRefs.current
     },
   }))
 
@@ -96,4 +103,7 @@ export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
       {strings}
     </svg>
   )
-})
+}
+//StringSvg.displayName = 'StringSvg'
+
+export const StringSvg = forwardRef<StringSvgType, Props>(StringSvgComp)

@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from 'next'
 import {
-  MutableRefObject, useContext,
+  MutableRefObject, RefObject, useContext,
   useEffect, useRef, useState
 } from 'react'
 
@@ -37,39 +37,45 @@ export const Section: NextPage<props> = (props) => {
   }
 
   // Imperative calls to StringSvg animations
-  const onHover = (ind, slide) => {
+  const onHover = (ind: number, slide: number) => {
     const span = spanRefs[ind].current
-    stringRef.current.stringRefs[ind].current.hover()
+    const stringRefs = stringRef?.current?.stringRefs
+    if (!stringRefs || !span) return;
+    const string = stringRefs[ind].current
+    if (!string) return;
+    string.hover()
     span.style.transition = '150ms linear'
-    spanRefs[ind].current.style.transform = `
+    span.style.transform = `
       translate(${slide}px, 1vh)`
   }
-  const onLeave = (ind, slide) => {
+  const onLeave = (ind: number, slide: number) => {
     const span = spanRefs[ind].current
-    stringRef.current.stringRefs[ind].current.unhover()
+    const stringRefs = stringRef?.current?.stringRefs
+    if (!stringRefs || !span) return;
+    const string = stringRefs[ind].current
+    if (!string) return;
+    string.unhover()
     span.style.transition = transValues[ind] + 'ms linear'
-    spanRefs[ind].current.style.transform = `
+    span.style.transform = `
       translate(${slide}px, 0vh)`
   }
-  const onClick = (ind, slide) => {
+  const onClick = (ind: number, slide: number) => {
     const span = spanRefs[ind].current
-    stringRef.current.stringRefs[ind].current.click()
+    const stringRefs = stringRef?.current?.stringRefs
+    if (!stringRefs || !span) return;
+    const string = stringRefs[ind].current
+    if (!string) return;
+    string.click()
     span.style.transition = transValues[ind] + 'ms linear'
     span.style.transform = `
       translate(${slide}px, 0vh)`
   }
 
-  useEffect(() => {
-    if (ind) return;
-    buttonRef.current.className = styles.introSlide
-  }, [mainRef])
-
-
-  const spanRefs: Array<MutableRefObject<HTMLSpanElement>> = []
+  const spanRefs: Array<RefObject<HTMLSpanElement>> = []
   const transValues = [200, 150, 100, 100, 150, 200]
 
   // Button JSX
-  const buttonElems = buttons.map((button, index) => {
+  const buttonElems = buttons?.map((button, index) => {
     const spanRef = useRef<HTMLSpanElement>(null)
     spanRefs.push(spanRef)
 
