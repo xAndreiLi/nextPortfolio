@@ -1,105 +1,120 @@
 import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
-import { Component, useRef, MutableRefObject, RefObject, useEffect, useImperativeHandle, forwardRef } from 'react'
+import { useRef, MutableRefObject, forwardRef, useImperativeHandle } from 'react'
+
+export interface StringPathType {
+    hover: Function
+    unhover: Function
+    click: Function
+}
 
 interface Props {
-  ind: number
+    ind: number
 }
 
-export interface StringType {
-  hover: Function
-  unhover: Function
-  wave: Function
+interface AnimType {
+    values: string
+    times: string
+    splines: string
 }
 
-export const StringPath = forwardRef<StringType, Props>((props, ref) => {
-  const { ind } = props
+export const StringPath = forwardRef<StringPathType, Props>((props, ref) => {
+    const { ind } = props
 
-  const waveOn = useRef(false)
-  const hoverRef = useRef<SVGAnimateElement>(null)
-  const returnRef = useRef<SVGAnimateElement>(null)
-  const waveRef = useRef<SVGAnimateElement>(null)
+    const waveOn = useRef(false)
+    const isHovered = useRef(false)
+    const hoverRef = useRef<SVGAnimateElement>(null)
+    const returnRef = useRef<SVGAnimateElement>(null)
+    const waveRef = useRef<SVGAnimateElement>(null)
 
-  const gap = 18
-  const curve = (amp: number) => {
-    return `M ${(ind) * gap},0 C ${(ind) * gap},0 ${amp + (ind * gap)},50 ${ind * gap},100`
-  }
-
-  const curveAnim = (start: number, end: number) => {
-    var values = ''
-    var times = ''
-    var splines = '0 0 1 1; '
-    const interval = (end - start) / 5
-    for (let i = 0; i <= 5; i++) {
-      values += curve(start + (interval * i)) + "; "
-      times += (i / 5).toFixed(3) + '; '
+    const gap = 18
+    const curve = (amp: number) => {
+        return `M ${(ind) * gap},0 C ${(ind) * gap},0 ${amp + (ind * gap)},50 ${ind * gap},100`
     }
-    values = values.slice(0, -2)
-    times = times.slice(0, -2)
-    splines = splines.repeat(5).slice(0, -2)
-    return [values, times, splines]
-  }
 
-  const waveAnim = () => {
-    var values = curve(3) + curve(6) + curve(12) + curve(6)
-    for (let i = 10; i > 0; i--) {
-      values += curveAnim(0, -i)[0]
-      values += curveAnim(-i, 0)[0]
-      values += curveAnim(0, i)[0]
-      values += curveAnim(i, 0)[0]
+    const curveAnim = (start: number, end: number) => {
+        var values = ''
+        var times = ''
+        var splines = '0 0 1 1; '
+        const interval = (end - start) / 5
+        for (let i = 0; i <= 5; i++) {
+            values += curve(start + (interval * i)) + "; "
+            times += (i / 5).toFixed(3) + '; '
+        }
+        values = values.slice(0, -2)
+        times = times.slice(0, -2)
+        splines = splines.repeat(5).slice(0, -2)
+        return {values, times, splines}
     }
-    var times = ''
-    var splines = '0 0 1 1; '
-    const count = values.split(';').length
-    for (let i = 0; i < count; i++) {
-      times += (i / (count - 1)).toFixed(3) + '; '
+
+    const waveAnim = () => {
+        var values = curve(3) + curve(6) + curve(12) + curve(6)
+        for (let i = 10; i > 0; i--) {
+            values += curveAnim(0, -i).values + '; '
+            values += curveAnim(-i, 0).values + '; '
+            values += curveAnim(0, i).values + '; '
+            values += curveAnim(i, 0).values
+        }
+        var times = ''
+        var splines = '0 0 1 1; '
+        const count = values.split(';').length
+        for (let i = 0; i < count; i++) {
+            times += (i / (count - 1)).toFixed(3) + '; '
+        }
+        times = times.slice(0, -2)
+        splines = splines.repeat(count - 1).slice(0, -2)
+        return {values, times, splines}
     }
-    times = times.slice(0, -2)
-    splines = splines.repeat(count - 1).slice(0, -2)
-    return [values, times, splines]
-  }
 
-  useImperativeHandle(ref, () => ({
-    hover: () => {
-      if (!waveOn.current) {hoverRef.current.beginElement()}
-    },
-    unhover: () => {
-      if (!waveOn.current) {returnRef.current.beginElement()}
-    },
-    wave: () => {
-      waveOn.current = true
-      waveRef.current.beginElement()
-      setTimeout(() => {waveOn.current = false},400)
-    },
-  }))
+    useImperativeHandle(ref, () => ({
+        hover: () => {
+            if (waveOn.current) return;
+            hoverRef.current.beginElement()
+            isHovered.current = true
+        },
+        unhover: () => {
+            if (waveOn.current || !isHovered.current) return;
+            returnRef.current.beginElement()
+            
+        },
+        click: () => {
+            waveOn.current = true
+            isHovered.current = false
+            waveRef.current.beginElement()
+            setTimeout(() => waveOn.current = false, 350)
+        }
+    }))
 
-  return (
-    <path className={styles.stringPath}
-      vectorEffect="non-scaling-stroke" d={curve(0)}>
-      <animate attributeName='d' dur="100ms" ref={hoverRef}
-        values={curveAnim(0, 3)[0]}
-        keyTimes={curveAnim(0, 3)[1]}
-        keySplines={curveAnim(0, 3)[2]}
-        calcMode="spline" fill='freeze'
-        begin={`indefinite`}
-      />
+    const hoverAnim = curveAnim(0, 8)
+    const returnAnim = curveAnim(8, 0)
+    const clickAnim = waveAnim()
 
-      <animate attributeName='d' dur="100ms" ref={returnRef}
-        values={curveAnim(3, 0)[0]}
-        keyTimes={curveAnim(3, 0)[1]}
-        keySplines={curveAnim(3, 0)[2]}
-        calcMode="spline" fill='freeze'
-        begin={`indefinite`}
-      />
+    return (
+        <path className={styles.stringPath}
+            vectorEffect="non-scaling-stroke" d={curve(0)}>
+            <animate attributeName='d' dur="100ms" ref={hoverRef}
+                values={hoverAnim.values}
+                keyTimes={hoverAnim.times}
+                keySplines={hoverAnim.splines}
+                calcMode="spline" fill='freeze'
+                begin={`indefinite`}
+            />
 
-      <animate attributeName='d' dur='400ms' ref={waveRef}
-        id={`string${ind}wave`}
-        values={waveAnim()[0]}
-        keyTimes={waveAnim()[1]}
-        keySplines={waveAnim()[2]}
-        calcMode="spline" fill='freeze'
-        begin={`indefinite`}
-      />
-    </path>
-  )
+            <animate attributeName='d' dur="100ms" ref={returnRef}
+                values={returnAnim.values}
+                keyTimes={returnAnim.times}
+                keySplines={returnAnim.splines}
+                calcMode="spline" fill='freeze'
+                begin={`indefinite`}
+            />
+
+            <animate attributeName='d' dur='400ms' ref={waveRef}
+                values={clickAnim.values}
+                keyTimes={clickAnim.times}
+                keySplines={clickAnim.splines}
+                calcMode="spline" fill='freeze'
+                begin={`indefinite`}
+            />
+        </path>
+    )
 })

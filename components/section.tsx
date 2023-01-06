@@ -1,121 +1,117 @@
 import { GetStaticProps, NextPage } from 'next'
-import { JSXElementConstructor, MutableRefObject, useCallback, useEffect, useRef } from 'react'
+import {
+  MutableRefObject, useContext,
+  useEffect, useRef, useState
+} from 'react'
 
 import styles from '../styles/Section.module.scss'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { setScroll, selectScroll } from '../app/scrollSlice'
 import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 import { StringSvgType } from './stringSvg'
-import type { Button } from './home'
-
+import type { Button } from '../data/sections'
+import { HomeContext } from './home'
 
 interface props {
-    children?: any
-    ind?: number
-    wheelRef: MutableRefObject<number>
-    stringRef: MutableRefObject<StringSvgType>
-    mainRef?: MutableRefObject<HTMLDivElement>
-    buttons?: Array<Button>
+  children?: any
+  ind: number
+  name?: string
+  buttons?: Array<Button>
+  visible: number
+  variant?: string
 }
 
 export const Section: NextPage<props> = (props) => {
-    const { children, ind, wheelRef, mainRef, buttons, stringRef } = props
+  const { children, ind, name, buttons, visible, variant } = props
+  const { stringRef, scrollRef, mainRef } = useContext(HomeContext)
 
-    const buttonRef = useRef<HTMLDivElement>(null)
-    const animReqRef = useRef(null);
+  const buttonRef = useRef<HTMLDivElement>(null)
 
-    const view = useAppSelector(selectView)
-    const dispatch = useAppDispatch()
+  const view = useAppSelector(selectView)
+  const scroll = useAppSelector(selectScroll)
+  const dispatch = useAppDispatch()
 
-    // Imperative calls to StringSvg animations
-    const onHover = (ind) => {
-        stringRef.current.stringRefs[ind].current.hover()
-    }
-    const onLeave = (ind) => {
-        stringRef.current.stringRefs[ind].current.unhover()
-    }
-    const onClick = (ind) => {
-        stringRef.current.stringRefs[ind].current.wave()
-    }
+  let btnClass = ''
+  if (variant == 'intro') {
+    btnClass = styles.introSlide
+  }
 
-    // Button JSX and 
-    const spanRefs: Array<MutableRefObject<HTMLSpanElement>> = []
-    const buttonElems = buttons.map((button, index) => {
-        const spanRef = useRef<HTMLSpanElement>(null)
-        spanRefs.push(spanRef)
-        return (
-            <div key={index}
-                onMouseEnter={() => onHover(index)}
-                onMouseLeave={() => onLeave(index)}
-                onMouseDown={() => {
-                    onClick(index)
-                    button.func(button.param)
-                }}
-            >
-                <span ref={spanRef}>{button.name}</span>
-            </div>
-        )
-    })
+  // Imperative calls to StringSvg animations
+  const onHover = (ind, slide) => {
+    const span = spanRefs[ind].current
+    stringRef.current.stringRefs[ind].current.hover()
+    span.style.transition = '150ms linear'
+    spanRefs[ind].current.style.transform = `
+      translate(${slide}px, 1vh)`
+  }
+  const onLeave = (ind, slide) => {
+    const span = spanRefs[ind].current
+    stringRef.current.stringRefs[ind].current.unhover()
+    span.style.transition = transValues[ind] + 'ms linear'
+    spanRefs[ind].current.style.transform = `
+      translate(${slide}px, 0vh)`
+  }
+  const onClick = (ind, slide) => {
+    const span = spanRefs[ind].current
+    stringRef.current.stringRefs[ind].current.click()
+    span.style.transition = transValues[ind] + 'ms linear'
+    span.style.transform = `
+      translate(${slide}px, 0vh)`
+  }
+
+  useEffect(() => {
+    if (ind) return;
+    buttonRef.current.className = styles.introSlide
+  }, [mainRef])
 
 
-    // Smooth Scroll Effect
-    useEffect(() => {
-        const mainDiv = mainRef.current
-        const buttonDiv = buttonRef.current
+  const spanRefs: Array<MutableRefObject<HTMLSpanElement>> = []
+  const transValues = [200, 150, 100, 100, 150, 200]
 
-        const vw = view.width / 100
-        const vh = view.height / 100
-        const startWidth = 42 * vh
-        const secWidth = 90 * vw
+  // Button JSX
+  const buttonElems = buttons.map((button, index) => {
+    const spanRef = useRef<HTMLSpanElement>(null)
+    spanRefs.push(spanRef)
 
-        const transX = () => {
-            let offset = ind * vw * 90
-            const scroll = wheelRef.current
-            if (scroll < startWidth) return -offset;
-            return scroll - startWidth - offset
-        }
+    const vw = view.width / 100
+    const vh = view.height / 100
+    let offset = (30 * vh) + (90 * vw * ind)
 
-        let lastWheel = 0
-        let isRunning = false
-        const scrollAnim = () => {
-            const wheel = wheelRef.current
-            isRunning = true
-            if (!lastWheel) lastWheel = wheel;
-            else if (lastWheel == wheel) {
-                isRunning = false
-            }
-
-            buttonDiv.style.transform = `translateX(${transX()}px)`
-            spanRefs.forEach((spanRef, ind) => {
-                const span = spanRef.current
-                span.style.transform = `translateX(${0
-                    }px)`
-            })
-
-            if (isRunning) requestAnimationFrame(() => scrollAnim())
-        }
-
-        const smoothScroll = () => {
-            if (isRunning) return;
-            animReqRef.current = requestAnimationFrame(() => scrollAnim())
-        }
-        mainDiv.addEventListener('wheel', smoothScroll)
-        return (() => {
-            cancelAnimationFrame(animReqRef.current)
-            mainDiv.removeEventListener('wheel', smoothScroll)
-        })
-    }, [])
+    let slide = scroll - offset
+    slide < 0 ? slide = 0 : slide = slide
+    let disp = 'none'
 
     return (
-        <div className={styles.section}>
-            <div className={styles.content}>
-                {children}
-            </div>
-            <div className={styles.fret}>
-                <div ref={buttonRef}>
-                    {buttonElems}
-                </div>
-            </div>
-        </div>
+      <div key={index} style={{
+        // display: disp
+      }}
+        onMouseEnter={() => onHover(index, slide)}
+        onMouseLeave={() => onLeave(index, slide)}
+        onMouseDown={() => {
+          onClick(index, slide)
+          //button.func(button.param)
+        }}
+      >
+        <span ref={spanRef} style={{
+          transition: `${transValues[index]}ms linear`,
+          transform: `translateX(${slide}px)`
+        }}
+        >{button.name}</span>
+      </div>
     )
+  })
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.content}>
+        <h1>{name}</h1>
+        {children}
+      </div>
+      <div className={styles.fret}>
+        <div ref={buttonRef}>
+          {buttonElems}
+        </div>
+      </div>
+    </div>
+  )
 }

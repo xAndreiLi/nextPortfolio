@@ -1,25 +1,27 @@
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, useEffect, MutableRefObject, useImperativeHandle, forwardRef, useState } from 'react'
+import { useRef, useEffect, MutableRefObject, 
+  useImperativeHandle, forwardRef, useState,
+  useContext
+} from 'react'
 
 import styles from '../styles/StringSvg.module.scss'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { setScroll, selectScroll } from '../app/scrollSlice'
 import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 
-import { StringPath, StringType } from './stringPath'
+import { StringPath, StringPathType } from './stringPath'
+import { HomeContext } from './home'
 
 export interface StringSvgType {
-  stringRefs: MutableRefObject<any>[]
+  stringRefs: MutableRefObject<StringPathType>[]
 }
 
 interface Props {
-  mainRef: MutableRefObject<HTMLDivElement>
-  scrollRef: MutableRefObject<HTMLDivElement>
-  holeRef: MutableRefObject<HTMLInputElement>
+
 }
 
 export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
-  const { mainRef, scrollRef, holeRef } = props
+  const { mainRef, scrollRef, holeRef } = useContext(HomeContext)
 
   const stringRefs = useRef([
     useRef(null), useRef(null),
@@ -37,13 +39,14 @@ export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
     return setTimeout(() => {
       const string = stringRefs.current[ind].current
       if (!string) return;
-      string.wave()
+      string.click()
       holeRef.current.click()
       timeouts.shift()
     }, delay)
   }
-  const pluckSeq = (seq: Array<number>, interval: number) => {
+  const pluckSeq = (seq: Array<number>, interval: number, delay?: number) => {
     let time = 0
+    if (delay) time = delay
     seq.forEach((i) => {
       timeouts.push(pluck(i, time))
       time += interval
@@ -70,7 +73,7 @@ export const StringSvg = forwardRef<StringSvgType, Props>((props, ref) => {
 
   useEffect(() => {
     if (!mainRef.current || !holeRef.current) return;
-    pluckSeq([0, 1, 2, 3, 4, 5], 250)
+    pluckSeq([0, 1, 2, 3, 4, 5], 250, 2000)
     mainRef.current.addEventListener("wheel", onScroll)
     return (() => {
       mainRef.current.removeEventListener("wheel", onScroll)

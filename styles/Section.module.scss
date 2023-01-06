@@ -1,51 +1,73 @@
 @use "styles/Home.module";
 
 .section {
-    display: flex;
-    flex-shrink: 0;
-    flex-direction: column;
-    width: 90vw;
-    height: 100%;
-    background-color: Home.$background-color;
-    overflow: hidden;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: 90vw;
+  height: 100%;
+}
+
+.content {
+  width: 100%;
+  height: 50vh;
+  padding-left: 4vw;
+  font-family: 'Merriweather', serif;
+
+  h1 {
+    margin: 15vh 0 2vh 0;
+    font-size: 1.5em;
   }
-  
-  .content {
-    width: 100%;
-    height: 50vh;
-    padding-left: 4vw;
-    font-family: 'Merriweather', serif;
-    h1 {
-      margin: 15vh 0 2vh 0;
-      font-size: 1.5em;
-    }
-  }
-  
-  .fret {
-    width: 100%;
-    height: 47vh;
-    display: flex;
-    flex-direction: column;
-    padding: 1.8vh 0 0 0;
-    border-style: solid;
-    border-color: white;
-    border-width: 5px;
-    border-top: none;
-    border-bottom: none;
-    border-right: none;
-    z-index: 0;
+}
+
+.fret {
+  width: 100%;
+  height: 41vh;
+  display: flex;
+  flex-direction: column;
+  padding: 5vh 0 0 0;
+  border-style: solid;
+  border-color: white;
+  border-width: 5px;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+
+  div {
+    display: inherit;
+    flex-direction: inherit;
+    z-index: 5;
+
     div {
-        display: inherit;
-        flex-direction: inherit;
-        div {
-          height: 6.5vh;
-          margin-top: 0vh;
-          padding-left: 3vw;
-          font-size: .5em;
-          text-decoration: none;
-          color: inherit;
-          pointer-events: all;
-          overflow: hidden;
-        }
+      height: 1.3em;
+      padding-left: 3vw;
+      font-size: .6em;
+      text-decoration: none;
+      pointer-events: all;
+      overflow: visible;
     }
   }
+}
+
+.introSlide {
+  div {
+    transform: translateX(-40vw);
+
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        transition: #{$i*250}+ms;
+        animation: btnSlide .25s linear forwards #{1600+($i*250)}+ms;
+      }
+    }
+
+    span {
+      transition: .15s;
+    }
+  }
+}
+
+@keyframes btnSlide {
+  to {
+    transform: translateX(0vw);
+  }
+}

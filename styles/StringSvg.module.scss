@@ -1,18 +1,34 @@
+@use "styles/Home.module";
+
 .stringPath {
-    stroke: #FDFFFC;
-    stroke-width: 3px;
-    fill: none;
+  stroke: Home.$light-color;
+  stroke-width: 3px;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: -1200;
+  fill: none;
+
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) {
+      animation: stringAnim .5s linear forwards #{($i*250)}+ms;
+    }
   }
-  
-  .stringSvg {
-    position: absolute;
-    top: 58vh;
-    left: 100vw;
-    width: 35vh;
-    height: 100vw;
-    transform-origin: top left;
-    transform: rotate(90deg);
-    overflow: visible;
-    z-index: 11;
-    pointer-events: none;
+}
+
+@keyframes stringAnim {
+  to {
+    stroke-dashoffset: 0;
   }
+}
+
+.stringSvg {
+  position: absolute;
+  top: 58vh;
+  left: 100vw;
+  width: 35vh;
+  height: 100vw;
+  transform-origin: top left;
+  transform: rotate(90deg);
+  overflow: visible;
+  z-index: 2;
+  pointer-events: none;
+}
