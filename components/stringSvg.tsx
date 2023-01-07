@@ -17,6 +17,7 @@ import { HomeContext } from './home'
 
 export interface StringSvgType {
   stringRefs: RefObject<StringPathType>[] | undefined
+  stringRef: (ind: number) => StringPathType | null
 }
 
 interface Props {
@@ -31,6 +32,8 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     useRef(null), useRef(null),
     useRef(null), useRef(null)
   ])
+
+  const [loaded, setLoaded] = useState(false)
 
   const strings = stringRefs.current.map((val, ind) => {
     return <StringPath key={ind} ind={ind} ref={val} />
@@ -60,40 +63,19 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
 
 
   useEffect(() => {
-    const main = mainRef?.current
-    const hole = holeRef?.current
-    if (!main || !hole) return;
-
-    const onScroll = (e: WheelEvent) => {
-      const scroll = scrollRef?.current
-      const timeouts = timeoutRef.current
-      if ((e.deltaY == 0) || timeouts.length || !scroll) return;
-  
-      pluckSeq([0, 1, 2, 3, 4, 5, 4, 3, 2], 400)
-      let currScroll = scrollRef.current.scrollLeft
-      let timer = setInterval(() => {
-        if (scroll.scrollLeft == currScroll) {
-          clearInterval(timer)
-          timeouts.forEach((t) => {
-            clearTimeout(t)
-          })
-          timeouts.length = 0
-        }
-        currScroll = scroll.scrollLeft;
-      }, 200)
-    }
-
     pluckSeq([0, 1, 2, 3, 4, 5], 250, 2000)
-    main.addEventListener("wheel", onScroll)
-    return (() => {
-      main.removeEventListener("wheel", onScroll)
-    })
   }, [mainRef])
 
   useImperativeHandle(ref, () => ({
     get stringRefs() {
       if (stringRefs.current) return stringRefs.current
     },
+    stringRef: (ind: number) => {
+      const strings = stringRefs.current
+      if (!strings) return null;
+      const string = strings[ind].current
+      return string
+    }
   }))
 
   return (

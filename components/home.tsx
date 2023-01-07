@@ -47,7 +47,6 @@ export const Home: NextPage = () => {
     const scrollDiv = scrollRef.current
     if (!mainDiv || !scrollDiv) return;
 
-    e.preventDefault()
     if (e.deltaY == 0) return;
     let scrollTo = scrollDiv.scrollLeft + e.deltaY
     if (scrollTo < 0) scrollTo = 0;
@@ -55,22 +54,25 @@ export const Home: NextPage = () => {
       left: scrollTo,
     })
 
-    const vw = view.width / 100
-    const vh = view.height / 100
-    const startWidth = 42*vh
-    const secWidth = 90*vw
+    // const vw = view.width / 100
+    // const vh = view.height / 100
+    // const startWidth = 42 * vh
+    // const secWidth = 90 * vw
 
-    const currSec = Math.trunc(Math.abs(
-      ((scrollTo-startWidth) / secWidth)))
-    if (visible != currSec) {
-      setVisible(currSec)
-    }
+    // const currSec = Math.trunc(Math.abs(
+    //   ((scrollTo - startWidth) / secWidth)))
+    // if (visible != currSec) {
+    //   setVisible(currSec)
+    // }
 
-    console.log(currSec)
+    // console.log(currSec)
 
     dispatch(setScroll(scrollTo))
 
   }
+
+  const preventVertical =
+    (e: globalThis.WheelEvent): any => { e.preventDefault() }
 
   useEffect(() => {
     const onResize = () => {
@@ -80,6 +82,13 @@ export const Home: NextPage = () => {
     onResize()
     window.addEventListener("resize", onResize)
     return () => window.removeEventListener("resize", onResize)
+  })
+
+  useEffect(() => {
+    const main = mainRef.current
+    if (!main) return;
+    main.addEventListener("wheel", preventVertical)
+    return () => main.removeEventListener('wheel', preventVertical)
   })
 
   const sections = sectionData.map((section, ind) => {

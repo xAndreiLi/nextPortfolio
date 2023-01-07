@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.scss'
 export interface Button {
   name: string;
   func: string;
-  params: unknown;
+  params: Array<unknown>;
 }
 
 interface SectionDataType {
@@ -15,12 +15,7 @@ interface SectionDataType {
 const homeBtn: Button = {
   name: 'home',
   func: 'navigate',
-  params: ['home']
-}
-const nextBtn: Button = {
-  name: 'next',
-  func: 'navigate',
-  params: ['next']
+  params: [0]
 }
 
 const createButtons = (names:Array<string>, 
@@ -48,49 +43,49 @@ export const sectionData: Array<SectionDataType> = [
     buttons: createButtons([
       'projects', 'experience', 'about', 'contact', 'blog'
     ], 'navigate', [
-      [0], [1], [2], [3], [4], [5]
+      [1], [2], [3], [4], [5]
     ])
   },
   {
-    name: 'projects',
+    name: 'Projects',
     content: (<>
 
     </>),
     buttons: createButtons([
       'intune', 'mashsong', 'typetrainer', 'ledcontrol', 'next'
     ], 'navigate', [
-      [0], [1], [2], [3], [4], [5]
+      [1], [2], [3], [4], [2]
     ])
   },
   {
-    name: 'experience',
+    name: 'Experience',
     content: (<>
 
     </>),
     buttons: createButtons([
-      'projects', 'experience', 'about', 'contact'
+      'boeing', 'asu research', 'natural langauge', 'computer vision', 'next'
     ], 'navigate', [
-      [0], [1], [2], [3], [4], [5]
+      [1], [2], [3], [4], [3]
     ])
   },
   {
-    name: 'about',
+    name: 'About',
     content: (<>
 
     </>),
     buttons: createButtons([
-      'projects', 'experience', 'about', 'contact'
+      'who i am', 'where im from', 'my passions', 'my dreams', 'next'
     ], 'navigate', [
-      [0], [1], [2], [3], [4], [5]
+      [1], [2], [3], [4], [4]
     ])
   },
   {
-    name: 'contact',
+    name: 'Contact',
     content: (<>
 
     </>),
     buttons: createButtons([
-      'projects', 'experience', 'about', 'contact'
+      'github', 'linkedin', 'email', 'leave a message', 'next'
     ], 'navigate', [
       [0], [1], [2], [3], [4], [5]
     ])

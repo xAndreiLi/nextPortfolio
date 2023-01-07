@@ -1,6 +1,6 @@
 import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, MutableRefObject, forwardRef, useImperativeHandle, ForwardedRef } from 'react'
+import { useRef, MutableRefObject, forwardRef, useImperativeHandle, ForwardedRef, useState } from 'react'
 
 export interface StringPathType {
     hover: Function

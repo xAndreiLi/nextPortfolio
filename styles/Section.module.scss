@@ -12,7 +12,6 @@
   width: 100%;
   height: 50vh;
   padding-left: 4vw;
-  font-family: 'Merriweather', serif;
 
   h1 {
     margin: 15vh 0 2vh 0;
@@ -21,7 +20,7 @@
 }
 
 .fret {
-  width: 100%;
+  width: 95%;
   height: 41vh;
   display: flex;
   flex-direction: column;
@@ -32,26 +31,31 @@
   border-top: none;
   border-bottom: none;
   border-right: none;
+  overflow-x: hidden;
 
   div {
     display: inherit;
     flex-direction: inherit;
-    z-index: 5;
+    z-index: 2;
 
     div {
       height: 1.3em;
       padding-left: 3vw;
+      padding-right: 3vw;
       font-size: .6em;
       text-decoration: none;
       pointer-events: all;
-      overflow: visible;
+
+      span {
+
+      }
     }
   }
 }
 
 .introSlide {
   div {
-    transform: translateX(-40vw);
+    transform: translateX(-75vw);
 
     @for $i from 1 through 6 {
       &:nth-child(#{$i}) {
@@ -61,7 +65,7 @@
     }
 
     span {
-      transition: .15s;
+
     }
   }
 }
@@ -69,5 +73,6 @@
 @keyframes btnSlide {
   to {
     transform: translateX(0vw);
+    transition: none;
   }
 }

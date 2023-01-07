@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from 'next'
 import {
-  MutableRefObject, RefObject, useContext,
+  MutableRefObject, RefObject, useCallback, useContext,
   useEffect, useRef, useState
 } from 'react'
 
@@ -11,6 +11,8 @@ import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 import { StringSvgType } from './stringSvg'
 import type { Button } from '../data/sections'
 import { HomeContext } from './home'
+
+import { StringButton } from './stringButton'
 
 interface props {
   children?: any
@@ -25,8 +27,6 @@ export const Section: NextPage<props> = (props) => {
   const { children, ind, name, buttons, visible, variant } = props
   const { stringRef, scrollRef, mainRef } = useContext(HomeContext)
 
-  const buttonRef = useRef<HTMLDivElement>(null)
-
   const view = useAppSelector(selectView)
   const scroll = useAppSelector(selectScroll)
   const dispatch = useAppDispatch()
@@ -36,74 +36,13 @@ export const Section: NextPage<props> = (props) => {
     btnClass = styles.introSlide
   }
 
-  // Imperative calls to StringSvg animations
-  const onHover = (ind: number, slide: number) => {
-    const span = spanRefs[ind].current
-    const stringRefs = stringRef?.current?.stringRefs
-    if (!stringRefs || !span) return;
-    const string = stringRefs[ind].current
-    if (!string) return;
-    string.hover()
-    span.style.transition = '150ms linear'
-    span.style.transform = `
-      translate(${slide}px, 1vh)`
-  }
-  const onLeave = (ind: number, slide: number) => {
-    const span = spanRefs[ind].current
-    const stringRefs = stringRef?.current?.stringRefs
-    if (!stringRefs || !span) return;
-    const string = stringRefs[ind].current
-    if (!string) return;
-    string.unhover()
-    span.style.transition = transValues[ind] + 'ms linear'
-    span.style.transform = `
-      translate(${slide}px, 0vh)`
-  }
-  const onClick = (ind: number, slide: number) => {
-    const span = spanRefs[ind].current
-    const stringRefs = stringRef?.current?.stringRefs
-    if (!stringRefs || !span) return;
-    const string = stringRefs[ind].current
-    if (!string) return;
-    string.click()
-    span.style.transition = transValues[ind] + 'ms linear'
-    span.style.transform = `
-      translate(${slide}px, 0vh)`
-  }
-
-  const spanRefs: Array<RefObject<HTMLSpanElement>> = []
-  const transValues = [200, 150, 100, 100, 150, 200]
-
   // Button JSX
   const buttonElems = buttons?.map((button, index) => {
-    const spanRef = useRef<HTMLSpanElement>(null)
-    spanRefs.push(spanRef)
-
-    const vw = view.width / 100
-    const vh = view.height / 100
-    let offset = (30 * vh) + (90 * vw * ind)
-
-    let slide = scroll - offset
-    slide < 0 ? slide = 0 : slide = slide
-    let disp = 'none'
-
     return (
-      <div key={index} style={{
-        // display: disp
-      }}
-        onMouseEnter={() => onHover(index, slide)}
-        onMouseLeave={() => onLeave(index, slide)}
-        onMouseDown={() => {
-          onClick(index, slide)
-          //button.func(button.param)
-        }}
-      >
-        <span ref={spanRef} style={{
-          transition: `${transValues[index]}ms linear`,
-          transform: `translateX(${slide}px)`
-        }}
-        >{button.name}</span>
-      </div>
+      <StringButton key={index}
+        button={button}
+        index={index}
+      />
     )
   })
 
@@ -114,7 +53,7 @@ export const Section: NextPage<props> = (props) => {
         {children}
       </div>
       <div className={styles.fret}>
-        <div ref={buttonRef}>
+        <div className={btnClass}>
           {buttonElems}
         </div>
       </div>
