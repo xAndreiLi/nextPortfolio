@@ -14,6 +14,7 @@ import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 import { Section } from './section'
 import { StringSvgType, StringSvg } from './stringSvg'
 import { sectionData } from '../data/sections'
+import { SoundHole } from './soundHole'
 
 interface refDataType {
   mainRef?: RefObject<HTMLDivElement>
@@ -117,20 +118,12 @@ export const Home: NextPage = () => {
         <StringSvg
           ref={stringRef}
         />
-        <div className={styles.scrollBox} ref={scrollRef}>
-          <div className={styles.startSection}>
-            <div className={styles.soundHole}>
-              <input type="checkbox" ref={holeRef}
-                onClick={() => {
-                  setTimeout(() => {
-                    if (!holeRef.current) return;
-                    holeRef.current.checked = false
-                  }, 150)
-                }}
-              />
-            </div>
-          </div>
-          {sections}
+        <div className={styles.about}>
+          <span>About</span>
+        </div>
+        <SoundHole/>
+        <div className={styles.blog}>
+          <span>Blog</span>
         </div>
       </HomeContext.Provider>
     </div>

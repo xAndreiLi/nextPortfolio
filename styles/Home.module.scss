@@ -1,20 +1,50 @@
 @use "sass:selector";
 @use "sass:math";
 
-$background-color: #2B2D42;
-$light-color: #8D99AE;
-$dark-color: #08080C;
-$text-color: #EDF2F4;
+$background-color: #141414;
+$light-color: #F7F3F3;
+$dark-color: #141414;
+$text-color: #F2E9E4;
 
 
 .main {
   height: 100vh;
+  display: flex;
+  align-items: center;
   overflow: hidden;
-  font-size: 8vh;
+  font-size: 1em;
   background-color: $background-color;
   color: $text-color;
   overflow: hidden;
+  transform: rotate3d(1, 1, 2);
 }
+
+.about {
+  width: 33vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    
+  }
+  
+}
+
+.blog {
+  width: 33vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    
+  }
+  
+}
+
+
 
 @keyframes glowAnim {
   0% {
@@ -23,43 +53,6 @@ $text-color: #EDF2F4;
   100% {
     box-shadow: 0 0 150px $light-color
     
-  }
-}
-
-.soundHole {
-  width: 70vh;
-  height: 70vh;
-  transform: translate(-46vh, 38vh);
-  border-radius: 100%;
-  border-style: solid;
-  border-color: $dark-color;
-  box-shadow: 0 0 50px $light-color;
-  animation: glowAnim 3s linear infinite alternate;
-  background-image: radial-gradient($dark-color 10%, $light-color 130%);
-
-  input {
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    margin: 0;
-    appearance: none;
-    background-image: radial-gradient($dark-color 35%, $light-color 125%);
-
-    transition: 1s;
-    opacity: 1;
-    &:hover{
-      transition: .5s .1s;
-      opacity: .1;
-    }
-    &:checked{
-      transition: .15s;
-      opacity: .5;
-    }
-    
-  }
-
-  &:hover {
-    transition: 2s;
   }
 }
 
@@ -75,8 +68,11 @@ $text-color: #EDF2F4;
 }
 
 .startSection {
-  width: 22vh;
+  width: 100vw;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes scrollInAnim {

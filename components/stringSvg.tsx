@@ -45,9 +45,8 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     const timeouts = timeoutRef.current
     return setTimeout(() => {
       const string = stringRefs.current[ind].current
-      if (!string || !holeRef?.current) return;
+      if (!string) return;
       string.click()
-      holeRef.current.click()
       timeouts.shift()
     }, delay)
   }
@@ -63,7 +62,7 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
 
 
   useEffect(() => {
-    pluckSeq([0, 1, 2, 3, 4, 5], 250, 2000)
+    pluckSeq([0, 1, 2, 3, 4, 5], 250, 4000)
   }, [mainRef])
 
   useImperativeHandle(ref, () => ({
@@ -79,14 +78,16 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
   }))
 
   return (
-    <svg
-      className={styles.stringSvg}
-      viewBox='0 0 100 100'
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio='none'
-    >
-      {strings}
-    </svg>
+    <div className={styles.stringContainer}>
+      <svg
+        className={styles.stringSvg}
+        viewBox='0 0 100 100'
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio='none'
+      >
+        {strings}
+      </svg>
+    </div>
   )
 }
 
