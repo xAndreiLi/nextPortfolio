@@ -47,7 +47,12 @@
       pointer-events: all;
 
       span {
-
+        transition: all 500ms;
+        color: Home.$dark-color;
+        &:hover {
+          color: Home.$text-color;
+          
+        }
       }
     }
   }

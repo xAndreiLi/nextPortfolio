@@ -36,27 +36,21 @@ export const StringButton: NextPage<Props> = (props) => {
     const string = stringRef?.current?.stringRef(index)
     if (!span || !string) return;
     string.hover()
-    span.style.transition = '150ms linear'
     span.style.transform = `translateY(1vh)`
-    setTimeout(() => span.style.transition = '0ms linear', 100)
   }
   const onLeave = () => {
     const span = spanRef.current
     const string = stringRef?.current?.stringRef(index)
     if (!span || !string) return;
     string.unhover()
-    span.style.transition = '150ms linear'
     span.style.transform = `translateY(0vh)`
-    setTimeout(() => span.style.transition = '0ms linear', 100)
   }
   const onClick = () => {
     const span = spanRef.current
     const string = stringRef?.current?.stringRef(index)
     if (!span || !string) return;
     string.click()
-    span.style.transition = '150ms linear'
     span.style.transform = `translateY(0vh)`
-    setTimeout(() => span.style.transition = '0ms linear', 100)
     if (button.func == 'navigate') navigate();
   }
 
