@@ -12,8 +12,8 @@ interface ViewState {
 
 const initialState: ViewState = {
     value: {
-        width:  typeof window !== 'undefined'? window.innerWidth : null,
-        height: typeof window !== 'undefined'? window.innerHeight : null
+        width:  typeof window !== 'undefined'? window.innerWidth : 0,
+        height: typeof window !== 'undefined'? window.innerHeight : 0
     }
 }
 
