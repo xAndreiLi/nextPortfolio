@@ -3,7 +3,7 @@
 
 $background-color: #141414;
 $light-color: #F7F3F3;
-$dark-color: #141414;
+$dark-color: #928B8F;
 $text-color: #F2E9E4;
 
 
@@ -26,7 +26,16 @@ $text-color: #F2E9E4;
   justify-content: center;
   align-items: center;
   span {
-    
+    transition: all .5s;
+    transform: translateX(30vw);
+    animation: slideAnim 1s forwards 4s;
+  }
+
+  &:hover {
+    span {
+      font-size: 1.25em;
+      color: $dark-color;
+    }
   }
   
 }
@@ -39,12 +48,25 @@ $text-color: #F2E9E4;
   align-items: center;
 
   span {
-    
+    transition: all .5s;
+    transform: translateX(-30vw);
+    animation: slideAnim 1s forwards 4s;
+  }
+
+  &:hover {
+    span {
+      font-size: 1.25em;
+      color: $dark-color;
+    }
   }
   
 }
 
-
+@keyframes slideAnim {
+  to {
+    transform: translateX(0vw);
+  }
+}
 
 @keyframes glowAnim {
   0% {

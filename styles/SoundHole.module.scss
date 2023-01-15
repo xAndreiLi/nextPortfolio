@@ -10,8 +10,14 @@
   border-style: solid;
   border-color: Home.$dark-color;
   box-shadow: 0 0 50px Home.$light-color;
-  //animation: glowAnim 3s linear infinite alternate 2s;
-  animation: introAnim 2s ease-out;
+  animation-name: introAnim, glowAnim;
+  animation-duration: 2s, 3s;
+  animation-timing-function: ease-out, linear;
+  animation-delay: 0s, 2s;
+  animation-direction: normal, alternate;
+  animation-iteration-count: 1, infinite;
+  // animation: glowAnim 3s linear infinite alternate 2.5s;
+  // animation: introAnim 2s ease-out;
   
   background-image: radial-gradient(Home.$light-color 10%, Home.$light-color 130%);
   z-index: 1;
@@ -24,7 +30,7 @@
     text-align: center;
     align-items: center;
     justify-content: center;
-    color: Home.$dark-color;
+    color: Home.$background-color;
 
     animation: fadeIn 5s;
 
