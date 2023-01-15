@@ -1,25 +1,15 @@
 @use "styles/Home.module";
 
-
-.stringContainer {
-  position: absolute;
-  width: 36vw;
-  height: 36vw;
-  border-radius: 100%;
-  left: 32vw;
-  overflow: hidden;
-}
-
 .stringPath {
   stroke: Home.$background-color;
   stroke-width: 3px;
-  stroke-dasharray: 2000;
-  stroke-dashoffset: -2000;
+  stroke-dasharray: 4000;
+  stroke-dashoffset: -4000;
   fill: none;
 
   @for $i from 1 through 6 {
     &:nth-child(#{$i}) {
-      animation: stringAnim .5s linear forwards #{($i*250)+2000}+ms;
+      animation: stringAnim 1.5s linear forwards #{($i*250)+1500}+ms;
     }
   }
 }
@@ -33,7 +23,7 @@
 .stringSvg {
   position: absolute;
   top: 5vw;
-  left: 100vw;
+  left: 68vw;
   width: 30vw;
   height: 100vw;
   transform-origin: top left;
@@ -42,3 +32,87 @@
   z-index: 2;
   pointer-events: none;
 }
+
+.soundHole {
+  position: absolute;
+  left: 31vw;
+  width: 38vw;
+  height: 38vw;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  border-width: .2vw;
+  border-radius: 100%;
+  border-style: solid;
+  border-color: Home.$dark-color;
+  box-shadow: 0 0 20px Home.$light-color;
+  background-color: Home.$light-color;
+
+  animation-name: introAnim, glowAnim;
+  animation-duration: 2s, 2s;
+  animation-timing-function: ease, ease-in;
+  animation-delay: 0s, 4s;
+  animation-direction: normal, alternate;
+  animation-iteration-count: 1, 2;
+  
+  z-index: 1;
+
+  div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+
+    .workSpan {
+      position: absolute;
+      top: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      margin: 0;
+
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      color: Home.$background-color;
+
+      overflow: hidden;
+
+      z-index: 1;
+
+      transition: all ease .4s;
+      opacity: 1;
+    }
+
+    &:hover {
+      .workSpan {
+        color: Home.$light-color;
+      }
+    }
+  }
+}
+
+@keyframes introAnim {
+  0% {
+    transform: scale(5);
+  }
+  65% {
+    transform: scale(5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes glowAnim {
+  from {
+    box-shadow: 0 0 20px Home.$light-color;
+  }
+  to {
+    box-shadow: 0 0 200px Home.$light-color;
+  }
+
+}
+

@@ -4,7 +4,8 @@ import {
   useImperativeHandle, forwardRef, useState,
   useContext,
   RefObject,
-  ForwardedRef
+  ForwardedRef,
+  useCallback
 } from 'react'
 
 import styles from '../styles/StringSvg.module.scss'
@@ -13,6 +14,7 @@ import { setScroll, selectScroll } from '../app/scrollSlice'
 import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 
 import { StringPath, StringPathType } from './stringPath'
+import { StringButton } from './stringButton'
 import { HomeContext } from './home'
 
 export interface StringSvgType {
@@ -33,8 +35,6 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     useRef(null), useRef(null)
   ])
 
-  const [loaded, setLoaded] = useState(false)
-
   const strings = stringRefs.current.map((val, ind) => {
     return <StringPath key={ind} ind={ind} ref={val} />
   })
@@ -50,7 +50,7 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
       timeouts.shift()
     }, delay)
   }
-  const pluckSeq = (seq: Array<number>, interval: number, delay?: number) => {
+  const pluckSeq = useCallback((seq: Array<number>, interval: number, delay?: number) => {
     const timeouts = timeoutRef.current
     let time = 0
     if (delay) time = delay
@@ -58,12 +58,12 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
       timeouts.push(pluck(i, time))
       time += interval
     });
-  }
+  }, [])
 
 
   useEffect(() => {
     pluckSeq([0, 1, 2, 3, 4, 5], 250, 4000)
-  }, [mainRef])
+  }, [mainRef, pluckSeq])
 
   useImperativeHandle(ref, () => ({
     get stringRefs() {
@@ -78,15 +78,20 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
   }))
 
   return (
-    <div className={styles.stringContainer}>
-      <svg
-        className={styles.stringSvg}
-        viewBox='0 0 100 100'
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio='none'
-      >
-        {strings}
-      </svg>
+    <div className={styles.soundHole}>
+      <div>
+        <svg
+          className={styles.stringSvg}
+          viewBox='0 0 100 100'
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio='none'
+        >
+          {strings}
+        </svg>
+        <div>
+
+        </div>
+      </div>
     </div>
   )
 }

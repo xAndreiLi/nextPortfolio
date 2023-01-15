@@ -22,6 +22,12 @@
   background-image: radial-gradient(Home.$light-color 10%, Home.$light-color 130%);
   z-index: 1;
 
+  div {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
   span {
     position: relative;
     display: flex;

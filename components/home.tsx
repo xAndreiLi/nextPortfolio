@@ -15,6 +15,7 @@ import { Section } from './section'
 import { StringSvgType, StringSvg } from './stringSvg'
 import { sectionData } from '../data/sections'
 import { SoundHole } from './soundHole'
+import { IntroAnim } from './introAnim'
 
 interface refDataType {
   mainRef?: RefObject<HTMLDivElement>
@@ -33,7 +34,6 @@ export const Home: NextPage = () => {
 
   const [visible, setVisible] = useState(0)
 
-
   const refData: refDataType = {
     mainRef, scrollRef,
     holeRef, stringRef
@@ -42,38 +42,6 @@ export const Home: NextPage = () => {
   const scroll = useAppSelector(selectScroll)
   const view = useAppSelector(selectView)
   const dispatch = useAppDispatch()
-
-  const onScroll: WheelEventHandler<HTMLDivElement> = (e: WheelEvent<HTMLDivElement>) => {
-    const mainDiv = mainRef.current
-    const scrollDiv = scrollRef.current
-    if (!mainDiv || !scrollDiv) return;
-
-    if (e.deltaY == 0) return;
-    let scrollTo = scrollDiv.scrollLeft + e.deltaY
-    if (scrollTo < 0) scrollTo = 0;
-    scrollDiv.scrollTo({
-      left: scrollTo,
-    })
-
-    // const vw = view.width / 100
-    // const vh = view.height / 100
-    // const startWidth = 42 * vh
-    // const secWidth = 90 * vw
-
-    // const currSec = Math.trunc(Math.abs(
-    //   ((scrollTo - startWidth) / secWidth)))
-    // if (visible != currSec) {
-    //   setVisible(currSec)
-    // }
-
-    // console.log(currSec)
-
-    dispatch(setScroll(scrollTo))
-
-  }
-
-  const preventVertical =
-    (e: globalThis.WheelEvent): any => { e.preventDefault() }
 
   useEffect(() => {
     const onResize = () => {
@@ -88,32 +56,18 @@ export const Home: NextPage = () => {
   useEffect(() => {
     const main = mainRef.current
     if (!main) return;
+    const preventVertical =
+      (e: globalThis.WheelEvent): any => { e.preventDefault() }
     main.addEventListener("wheel", preventVertical)
     return () => main.removeEventListener('wheel', preventVertical)
   })
 
-  const sections = sectionData.map((section, ind) => {
-    let variant = ''
-    if (ind == 0) variant = 'intro';
-    return (
-      <Section key={ind} ind={ind}
-        name={section.name}
-        buttons={section.buttons}
-        visible={visible}
-        variant={variant}
-      >
-        {section.content}
-      </Section>
-    )
-  })
-
   return (
-    <div className={styles.main} ref={mainRef}
-      onWheel={onScroll}
-    >
+    <div className={styles.main} ref={mainRef}>
       <Head>
         <title>Andrei Li: Portfolio</title>
       </Head>
+      <IntroAnim/>
       <HomeContext.Provider value={refData}>
         <StringSvg
           ref={stringRef}
@@ -121,7 +75,12 @@ export const Home: NextPage = () => {
         <div className={styles.about}>
           <span>About</span>
         </div>
-        <SoundHole/>
+        <div className={styles.work}>
+          <span className={styles.workSpan}>Work</span>
+          <div className={styles.workContainer}>
+
+          </div>
+        </div>
         <div className={styles.blog}>
           <span>Blog</span>
         </div>
