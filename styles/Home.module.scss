@@ -8,94 +8,69 @@ $text-color: #F2E9E4;
 
 
 .main {
+  width: 80vw;
+  margin: auto;
   position: relative;
-  height: 100vh;
   display: flex;
-  align-items: center;
+  justify-content: center;
   font-size: 1em;
   background-color: $background-color;
   color: $text-color;
-  overflow: hidden;
 }
 
-@mixin section {
-  width: 33vw;
-  height: 100%;
+.column {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  height: 310px;
+  justify-content: space-between;
+  margin-top: 170px;
+}
+
+.guitar {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  scale: 1;
+  margin-top: 10%;
 }
 
-@mixin sideSection {
-  span {
-    transition: all .5s;
-    animation: slideAnim 1s forwards 5s;
-  }
-
-  &:hover {
-    font-size: 1.25em;
-    color: $dark-color;
-  }
+.headBoard {
+  display: flex;
+  flex-direction: row;
+  height: 564px;
 }
 
-.about {
-  @include section;
-  @include sideSection;
-
-  span {
-    transform: translateX(30vw);
-  }
+.headSvg {
+  flex-shrink: 0;
 }
 
-.work {
-  @include section;
+.fretBoard {
   position: relative;
-  width: 35vw;
-  z-index: 1;
-
-  animation: fadeIn 7s;
-  
-  &:hover .workSpan {
-    color: $light-color;
-    font-size: .5em;
-  }
+  width: 180px;
+  height: 1600px;
+  border: solid 10px white;
+  justify-content: center;
 }
 
-.workContainer {
+.soundHole {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+  bottom: -480px;
+  width: 428px;
+  height: 428px;
+  border: 12px solid white;
+  border-radius: 1000px;
+  background-color: $background-color;
+  transform: translate(-136px,-50px);
+  z-index: 0;
 }
 
-.workSpan {
-  transition: all .5s;
-  color: $background-color;
+.bodySvg {
+  flex-shrink: 0;
+  transform: translateY(-405px);
+  height: 1748px;
 }
 
-.blog {
-  @include section;
-  @include sideSection;
-
-  span {
-    transform: translateX(-30vw);
-  }
-}
-
-@keyframes slideAnim {
-  to {
-    transform: translateX(0vw);
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+.labelText {
+  fill: #fff;
+  font-size: 1em;
 }

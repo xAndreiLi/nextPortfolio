@@ -1,4 +1,3 @@
-import { GetStaticProps, NextPage } from 'next'
 import {
   useRef, useEffect, MutableRefObject,
   useImperativeHandle, forwardRef, useState,
@@ -9,13 +8,7 @@ import {
 } from 'react'
 
 import styles from '../styles/StringSvg.module.scss'
-import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { setScroll, selectScroll } from '../app/scrollSlice'
-import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
-
 import { StringPath, StringPathType } from './stringPath'
-import { StringButton } from './stringButton'
-import { HomeContext } from './home'
 
 export interface StringSvgType {
   stringRefs: RefObject<StringPathType>[] | undefined
@@ -27,8 +20,6 @@ interface Props {
 }
 
 const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
-  const { mainRef, scrollRef, holeRef } = useContext(HomeContext)
-
   const stringRefs = useRef([
     useRef<StringPathType>(null), useRef(null),
     useRef(null), useRef(null),
@@ -60,11 +51,6 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     });
   }, [])
 
-
-  useEffect(() => {
-    pluckSeq([0, 1, 2, 3, 4, 5], 250, 4000)
-  }, [mainRef, pluckSeq])
-
   useImperativeHandle(ref, () => ({
     get stringRefs() {
       if (stringRefs.current) return stringRefs.current
@@ -78,21 +64,14 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
   }))
 
   return (
-    <div className={styles.soundHole}>
-      <div>
-        <svg
-          className={styles.stringSvg}
-          viewBox='0 0 100 100'
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio='none'
-        >
-          {strings}
-        </svg>
-        <div>
-
-        </div>
-      </div>
-    </div>
+    <svg
+      className={styles.stringSvg}
+      viewBox='0 0 100 100'
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio='none'
+    >
+      {strings}
+    </svg>
   )
 }
 

@@ -1,90 +1,51 @@
-import Head from 'next/head'
 import { GetStaticProps, NextPage } from 'next'
-import {
-  useRef, useState, useEffect, useLayoutEffect,
-  createContext,
-  WheelEventHandler, WheelEvent, RefObject,
-} from 'react'
-
 import styles from '../styles/Home.module.scss'
-import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { setScroll, selectScroll } from '../app/scrollSlice'
-import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
 
-import { Section } from './section'
-import { StringSvgType, StringSvg } from './stringSvg'
-import { sectionData } from '../data/sections'
-import { SoundHole } from './soundHole'
-import { IntroAnim } from './introAnim'
+import HeadSvg from './headSvg'
+import BodySvg from './bodySvg'
+import TuningPegSvg from './tuningPegSvg'
+import { StringSvg } from './stringSvg'
 
-interface refDataType {
-  mainRef?: RefObject<HTMLDivElement>
-  scrollRef?: RefObject<HTMLDivElement>
-  holeRef?: RefObject<HTMLInputElement>
-  stringRef?: RefObject<StringSvgType>
-}
-
-export const HomeContext = createContext<refDataType>({})
 
 export const Home: NextPage = () => {
-  const mainRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const holeRef = useRef<HTMLInputElement>(null)
-  const stringRef = useRef<StringSvgType>(null)
 
-  const [visible, setVisible] = useState(0)
+  const pegLabelsLeft = [
+    "Work", "Experience", "Blog",
+  ]
+  const pegLabelsRight = [
+    "Sort New", "Sectioned", "Sound On"
+  ]
 
-  const refData: refDataType = {
-    mainRef, scrollRef,
-    holeRef, stringRef
-  }
-
-  const scroll = useAppSelector(selectScroll)
-  const view = useAppSelector(selectView)
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const onResize = () => {
-      dispatch(setViewWidth(window.innerWidth))
-      dispatch(setViewHeight(window.innerHeight))
-    }
-    onResize()
-    window.addEventListener("resize", onResize)
-    return () => window.removeEventListener("resize", onResize)
+  const tuningPegsLeft = pegLabelsLeft.map((label, index) => {
+    return (
+      <TuningPegSvg key={index} label={label} index={index} style={{
+        "transform":"translateX(30%)",
+      }}/>
+    )
   })
 
-  useEffect(() => {
-    const main = mainRef.current
-    if (!main) return;
-    const preventVertical =
-      (e: globalThis.WheelEvent): any => { e.preventDefault() }
-    main.addEventListener("wheel", preventVertical)
-    return () => main.removeEventListener('wheel', preventVertical)
+  const tuningPegsRight = pegLabelsRight.map((label, index) => {
+    return (
+      <TuningPegSvg key={index+3} label={label} flip={"true"} index={index+3} style={{
+        "transform":"scaleX(-1) translateX(29%)",
+      }}/>
+    )
   })
 
   return (
-    <div className={styles.main} ref={mainRef}>
-      <Head>
-        <title>Andrei Li: Portfolio</title>
-      </Head>
-      <IntroAnim/>
-      <HomeContext.Provider value={refData}>
-        <StringSvg
-          ref={stringRef}
-        />
-        <div className={styles.about}>
-          <span>About</span>
+    <div className={styles.main}>
+      <div className={styles.guitar}>
+        <div className={styles.headBoard}>
+          <div className={styles.column}>{tuningPegsLeft}</div>
+          <HeadSvg className={styles.headSvg}/>
+          <div className={styles.column}>{tuningPegsRight}</div>
         </div>
-        <div className={styles.work}>
-          <span className={styles.workSpan}>Work</span>
-          <div className={styles.workContainer}>
-
-          </div>
+        <div className={styles.fretBoard}>
+          <StringSvg/>
+          <div className={styles.soundHole}/>
         </div>
-        <div className={styles.blog}>
-          <span>Blog</span>
-        </div>
-      </HomeContext.Provider>
+        <BodySvg className={styles.bodySvg}/>
+      </div>
     </div>
   )
 }
