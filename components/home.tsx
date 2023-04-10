@@ -1,100 +1,85 @@
-import Head from 'next/head'
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
 import styles from '../styles/Home.module.scss'
-import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { setScroll, selectScroll } from '../app/scrollSlice'
-import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
-
-import { Section } from './section'
-import { StringSvg } from './stringSvg'
+import HeadSvg from './headSvg'
+import BodySvg from './bodySvg'
+import TuningPegSvg from './tuningPegSvg'
+import { StringSvg, StringSvgType } from './stringSvg'
 
 
 export const Home: NextPage = () => {
-  const mainRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const holeRef = useRef<HTMLInputElement>(null);
 
-  const scroll = useAppSelector(selectScroll)
-  const view = useAppSelector(selectView)
-  const dispatch = useAppDispatch()
+  const stringRef = useRef<StringSvgType>(null)
 
   useEffect(() => {
-    const mainDiv = mainRef.current
-    const scrollDiv = scrollRef.current
-    if (!scrollDiv || !mainDiv) return;
+    stringRef.current?.pluckSeq([0, 1, 2, 3, 4, 5], 200)
+  }, [stringRef])
 
-    dispatch(setViewWidth(window.innerWidth))
-    dispatch(setViewHeight(window.innerHeight))
+  const pegLabelsLeft = [
+    "Work", "Experience", "Blog",
+  ]
+  const pegLabelsRight = [
+    "Sort New", "Sectioned", "Sound On"
+  ]
 
-    const onScroll = (e: WheelEvent) => {
-      e.preventDefault()
-      if (e.deltaY == 0) return;
-      let scrollTo = scrollDiv.scrollLeft + e.deltaY * .6
-      if (scrollTo < 0) scrollTo = 0;
-      dispatch(setScroll(scrollTo))
-      scrollDiv.scrollTo({
-        left: scrollTo,
-      })
-    }
-    const onResize = () => {
-      dispatch(setViewWidth(window.innerWidth))
-      dispatch(setViewHeight(window.innerHeight))
-    }
-    mainDiv.addEventListener("wheel", onScroll)
-    window.addEventListener("resize", onResize)
-    return () => {
-      mainDiv.removeEventListener("wheel", onScroll)
-      window.removeEventListener("resize", onResize)
-    }
-  }, [])
+  const tuningPegsLeft = pegLabelsLeft.map((label, index) => {
+    return (
+      <TuningPegSvg key={index} label={label} flip={"1"} index={index} style={{
+        "transform": "translateX(30%)",
+      }} />
+    )
+  })
+
+  const tuningPegsRight = pegLabelsRight.map((label, index) => {
+    return (
+      <TuningPegSvg key={index + 3} label={label} flip={"-1"} index={index + 3} style={{
+        "transform": "scaleX(-1) translateX(30%)",
+      }} />
+    )
+  })
 
   return (
-
-    <div className={styles.main} ref={mainRef}>
-      <Head>
-        <title>Andrei Li: Portfolio</title>
-      </Head>
-      <StringSvg
-        mainRef={mainRef}
-        scrollRef={scrollRef}
-        holeRef={holeRef}
-      />
-      <div className={styles.scrollBox} ref={scrollRef}>
-        <div className={styles.startSection}>
-          <div className={styles.soundHole}>
-            <input type="checkbox" ref={holeRef}
-              onClick={()=>{
-                setTimeout(()=>{holeRef.current.checked = false}, 150)
-              }}
-            />
+    <div className={styles.main}>
+      <div className={styles.guitar}>
+        <div className={styles.headBoard}>
+          <div className={styles.column}>{tuningPegsLeft}</div>
+          <HeadSvg className={styles.headSvg} />
+          <div className={styles.column}>{tuningPegsRight}</div>
+        </div>
+        <div className={styles.row}>
+          <div className={styles.contentLeft}>
+            <div className={styles.content}>
+              <div className={styles.nameText}>InTune</div>
+              <div className={styles.fret} />
+              <div className={styles.dateText}>Aug 2022</div>
+            </div>
+            <div className={styles.content}>
+              <div className={styles.fret} />
+              <p className={styles.contentText}>
+                Python package for splitting
+                songs into stems and blending them together.
+                Built with Spleeter and Soundboard.
+              </p>
+            </div>
+          </div>
+          <div className={styles.fretBoard}>
+            <StringSvg ref={stringRef} />
+            <div className={styles.soundHole} />
+          </div>
+          <div className={styles.contentRight}>
+            <div className={styles.content}>
+              <p className={styles.contentText}>
+                Social Media App built on React Native for sharing music with friends.
+              </p>
+            </div>
+            <div className={styles.content}>
+              <div className={styles.nameText}>MashSong</div>
+              <div className={styles.dateText}>Sep 2022</div>
+            </div>
           </div>
         </div>
-        <Section 
-          buttons={['home', 'projects', 'experience', 'about', 'contact', 'blog']}
-          ind={0}
-          >
-          <h1 className={styles.scrollIn}>Andrei Li</h1>
-          <div className={styles.fadeIn}>
-            <p>Designer | Researcher | Musician</p>
-          </div>
-        </Section>
-        <Section 
-          buttons={['home', 'intune', 'mashsong', 'typetrainer', 'ledcontrol', 'more']}
-          ind={1}
-          >
-          <h1>Projects</h1>
-        </Section>
-        <Section>
-          <h1>Experience</h1>
-        </Section>
-        <Section>
-          <h1>About</h1>
-        </Section>
-        <Section>
-          <h1>Contact</h1>
-        </Section>
+        <BodySvg className={styles.bodySvg} />
       </div>
     </div>
   )

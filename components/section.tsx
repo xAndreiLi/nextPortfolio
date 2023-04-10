@@ -1,48 +1,62 @@
 import { GetStaticProps, NextPage } from 'next'
-import { JSXElementConstructor, useRef } from 'react'
+import {
+  MutableRefObject, RefObject, useCallback, useContext,
+  useEffect, useRef, useState
+} from 'react'
 
 import styles from '../styles/Section.module.scss'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { setScroll, selectScroll } from '../app/scrollSlice'
 import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
+import { StringSvgType } from './stringSvg'
+import type { Button } from '../data/sections'
+import { HomeContext } from './home'
+
+import { StringButton } from './stringButton'
 
 interface props {
-    children?: any
-    buttons?: Array<string>
-    ind?: number
+  children?: any
+  ind: number
+  name?: string
+  buttons?: Array<Button>
+  visible: number
+  variant?: string
 }
 
 export const Section: NextPage<props> = (props) => {
-    const {children, buttons, ind} = props
+  const { children, ind, name, buttons, visible, variant } = props
+  const { stringRef, scrollRef, mainRef } = useContext(HomeContext)
 
-    const scroll = useAppSelector(selectScroll)
-    const view = useAppSelector(selectView)
-    const dispatch = useAppDispatch()
-    const vw = view.width / 100
-    const offset = ind*vw*90
+  const view = useAppSelector(selectView)
+  const scroll = useAppSelector(selectScroll)
+  const dispatch = useAppDispatch()
 
-    let buttonElems = []
-    if (buttons) {
-        buttonElems = buttons.map((value, index) => {
-            return(
-                <a key={index}>{value}</a>
-            )
-        })
-    }
+  let btnClass = ''
+  if (variant == 'intro') {
+    btnClass = styles.introSlide
+  }
 
+  // Button JSX
+  const buttonElems = buttons?.map((button, index) => {
     return (
-        <div className={styles.section}>
-          <div className={styles.content}>
-            {children}
-          </div>
-          <div className={styles.fret}>
-            <div style={{
-              transition: '.5s ease-out',
-              transform: `translateX(${scroll-offset}px)`
-            }}>
-                {buttonElems}
-            </div>
-          </div>
-        </div>
+      <StringButton key={index}
+        button={button}
+        index={index}
+      />
     )
+  })
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.content}>
+        <h1>{name}</h1>
+        {children}
+      </div>
+      <div className={styles.fret}>
+        <div className={btnClass}>
+          {buttonElems}
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -1,122 +1,144 @@
 @use "sass:selector";
 @use "sass:math";
 
-$background-color: #23395B;
-$light-color: #8EA8C3;
-$dark-color: #161925;
-$text-color: #FDFFFC;
+$background-color: #141414;
+$light-color: #F7F3F3;
+$dark-color: #928B8F;
+$text-color: #F2E9E4;
 
 
 .main {
+  width: 80vw;
+  margin: auto;
   position: relative;
-  height: 100vh;
   display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  font-size: 8vh;
+  justify-content: center;
+  font-size: 1em;
+  font-family: 'Exo 2', sans-serif;
   background-color: $background-color;
   color: $text-color;
 }
 
-@keyframes glowAnim {
-  0% {
-    box-shadow: 0 0 50px $light-color
-  }
-  100% {
-    box-shadow: 0 0 150px $light-color
-    
-  }
+.column {
+  display: flex;
+  flex-direction: column;
+  height: 310px;
+  justify-content: space-between;
+  margin-top: 170px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+$contentPadding: 20px;
+$contentWidth: 30%;
+$contentMargin: 80px;
+.contentLeft {
+  width: $contentWidth;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: $contentPadding;
+  margin-top: $contentMargin;
+  text-align: right;
+}
+.contentRight {
+  width: $contentWidth;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: $contentPadding;
+  margin-top: $contentMargin;
+  text-align: left;
+}
+.content {
+  position: relative;
+  width: 100%;
+  height: 175px;
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+  justify-content: center;
+  text-align: inherit;
+}
+
+.fret {
+  position: absolute;
+  height: 5px;
+  width: 185px;
+  right: -190px - $contentPadding;
+  top: 50%;
+  background-color: #fff;
+  flex-shrink: 0;
+}
+
+.guitar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scale: 1;
+  margin-top: 1%;
+}
+
+.headBoard {
+  display: flex;
+  flex-direction: row;
+  height: 564px;
+}
+
+.headSvg {
+  flex-shrink: 0;
+}
+
+.fretBoard {
+  position: relative;
+  width: 180px;
+  height: 1600px;
+  border: solid 10px white;
+  flex-shrink: 0;
 }
 
 .soundHole {
-  position: relative;
-  width: 70vh;
-  height: 70vh;
-  transform: translate(-25vh, 38vh);
-  border-radius: 100%;
-  border-style: solid;
-  border-color: $dark-color;
-  overflow: hidden;
-  box-shadow: 0 0 50px $light-color;
-  animation: glowAnim 3s linear infinite alternate;
-  background-image: radial-gradient($dark-color 10%, $light-color 130%);
-  z-index: 2;
-
-  input {
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    appearance: none;
-    background-image: radial-gradient($dark-color 35%, $light-color 125%);
-    z-index: 2;
-
-    transition: 1s;
-    opacity: 1;
-    &:hover{
-      transition: .5s .1s;
-      opacity: .1;
-    }
-    &:checked{
-      transition: .15s;
-      opacity: .5;
-    }
-    
-  }
-
-  &:hover {
-    transition: 2s;
-    //box-shadow: 0 0 50px grey;
-  }
+  position: absolute;
+  bottom: -480px;
+  width: 428px;
+  height: 428px;
+  border: 12px solid white;
+  border-radius: 1000px;
+  background-color: $background-color;
+  transform: translate(-136px,-50px);
+  z-index: 0;
 }
 
-@for $i from 2 through 5 {
-    .scrollBox > div:nth-child(#{$i}) {
-      z-index: $i;
-    }
-}
-
-.scrollBox {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
-.startSection {
-  position: relative;
-  width: 42vh;
-  height: 100%;
+.bodySvg {
   flex-shrink: 0;
-  overflow-y: clip;
-  z-index: 10;
+  transform: translateY(-405px);
+  height: 1748px;
 }
 
-@keyframes scrollInAnim {
-  from { width: 0; }
+.labelText {
+  fill: #fff;
+  font-size: .85em;
 }
 
-.scrollIn {
-  width: 5em;
-  height: 1em;
-  white-space: nowrap;
-  overflow: hidden;
-  animation: scrollInAnim 2s steps(100,end);
+.nameText {
+  fill: #fff;
+  font-size: 1.15em;
+  text-anchor: middle;
 }
 
-@keyframes fadeInAnim {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+.contentText {
+  fill: #fff;
+  font-size: .5em;
+  text-align: inherit;
 }
 
-.fadeIn {
-  opacity: 0;
-  animation: fadeInAnim 1s linear 2.5s forwards;
+.dateText {
+  fill: #fff;
+  font-size: .65em;
+  margin: .15em 0 .6em 0;
 }
-

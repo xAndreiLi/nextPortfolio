@@ -1,108 +1,81 @@
-import { GetStaticProps, NextPage } from 'next'
-import { useRef, useEffect, MutableRefObject } from 'react'
+import {
+  useRef, useEffect, MutableRefObject,
+  useImperativeHandle, forwardRef, useState,
+  useContext,
+  RefObject,
+  ForwardedRef,
+  useCallback
+} from 'react'
 
 import styles from '../styles/StringSvg.module.scss'
-import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { setScroll, selectScroll } from '../app/scrollSlice'
-import { setViewWidth, setViewHeight, selectView } from '../app/viewSlice'
+import { StringPath, StringPathType } from './stringPath'
 
-import { StringButton } from './stringButton'
-
-interface props {
-    mainRef: MutableRefObject<HTMLDivElement>
-    scrollRef: MutableRefObject<HTMLDivElement>
-    holeRef: MutableRefObject<HTMLInputElement>
+export interface StringSvgType {
+  stringRefs: RefObject<StringPathType>[] | undefined
+  stringRef: (ind: number) => StringPathType | null
+  pluck: (ind: number, delay: number) => void
+  pluckSeq: (seq: Array<number>, interval: number, delay?: number) => void
 }
 
-export const StringSvg: NextPage<props> = (props) => {
-    const { mainRef, scrollRef, holeRef } = props
+interface Props {
 
-    const scroll = useAppSelector(selectScroll)
-    const view = useAppSelector(selectView)
-    const dispatch = useAppDispatch()
-
-    const stringRef: Array<MutableRefObject<SVGAnimateElement>> = []
-    for (let i = 0; i < 6; i++) {
-        const ref = useRef<SVGAnimateElement>()
-        stringRef.push(ref)
-    }
-
-    const onClick = (ind?: number) => {
-        holeRef.current.click()
-        setTimeout(()=>{holeRef.current.checked = false}, 150)
-
-        if (ind) {
-            console.log(view)
-            const vw = view.width / 100
-            const scrollAmt = vw * 90 * ind
-            dispatch(setScroll(scrollAmt))
-            scrollRef.current.scrollTo({
-                left: scrollAmt + (vw*15),
-                behavior: "smooth"
-            })
-        } else if (ind == 0){
-            dispatch(setScroll(0))
-            scrollRef.current.scrollTo({
-                left: 0,
-                behavior: "smooth"
-            })
-        }
-    }
-
-    const strings = stringRef.map((val, ind) => {
-        return <StringButton key={ind} ind={ind} waveRef={val} onClick={onClick}/>
-    })
-
-    let timeouts = useRef([]).current
-
-    const pluck = (ind: number, delay: number) => {
-        return setTimeout(() => {
-            const string = stringRef[ind].current
-            if (!string) return;
-            string.beginElement()
-            onClick()
-            timeouts.shift()
-        }, delay)
-    }
-    const pluckSeq = (seq:Array<number>, interval:number) => {
-        let time = 0
-        seq.forEach((i) => {
-            timeouts.push(pluck(i, time))
-            time += interval
-        });
-    }
-
-    const onScroll = (e: WheelEvent) => {
-        if ((e.deltaY == 0) || (timeouts.length)) return;
-        pluckSeq([0,1,2,3,4,5,4,3,2], 400)
-        let currScroll = scrollRef.current.scrollLeft
-        let timer = setInterval(() => {
-            if (scrollRef.current.scrollLeft == currScroll) {
-                clearInterval(timer)
-                timer = null
-                timeouts.forEach((t) => {
-                    clearTimeout(t)
-                })
-                timeouts = []
-            }
-            currScroll = scrollRef.current.scrollLeft;
-        }, 500)
-    }
-
-    useEffect(() => {
-        if(!mainRef.current || !holeRef.current) return;
-        pluckSeq([0,1,2,3,4,5], 250)
-        mainRef.current.addEventListener("wheel", onScroll)
-    }, [mainRef])
-
-    return (
-        <svg
-        className={styles.stringSvg}
-        viewBox='0 0 100 100'
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio='none'
-      >
-        {strings}
-      </svg>
-    )
 }
+
+const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
+  const stringRefs = useRef([
+    useRef<StringPathType>(null), useRef(null),
+    useRef(null), useRef(null),
+    useRef(null), useRef(null)
+  ])
+
+  const strings = stringRefs.current.map((val, ind) => {
+    return <StringPath key={ind} ind={ind} ref={val} />
+  })
+
+  const timeoutRef = useRef<Array<NodeJS.Timeout>>([])
+
+  const pluck = (ind: number, delay: number) => {
+    const timeouts = timeoutRef.current
+    return setTimeout(() => {
+      const string = stringRefs.current[ind].current
+      if (!string) return;
+      string.click()
+      timeouts.shift()
+    }, delay)
+  }
+  const pluckSeq = useCallback((seq: Array<number>, interval: number, delay: number = 0) => {
+    const timeouts = timeoutRef.current
+    let time = delay
+    seq.forEach((i) => {
+      timeouts.push(pluck(i, time))
+      time += interval
+    });
+  }, [])
+
+  useImperativeHandle(ref, () => ({
+    get stringRefs() {
+      if (stringRefs.current) return stringRefs.current
+    },
+    stringRef: (ind: number) => {
+      const strings = stringRefs.current
+      if (!strings) return null;
+      const string = strings[ind].current
+      return string
+    },
+    pluck: pluck,
+    pluckSeq: pluckSeq
+  }))
+
+  return (
+    <svg
+      className={styles.stringSvg}
+      viewBox='0 0 100 100'
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio='none'
+    >
+      {strings}
+    </svg>
+  )
+}
+
+export const StringSvg = forwardRef<StringSvgType, Props>(StringSvgComp)

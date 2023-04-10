@@ -1,17 +1,17 @@
+@use "styles/Home.module";
+
 .stringPath {
-    stroke: #FDFFFC;
-    stroke-width: 3px;
-    fill: none;
-  }
-  
-  .stringSvg {
-    position: absolute;
-    top: 58vh;
-    left: 100vw;
-    width: 35vh;
-    height: 100vw;
-    transform-origin: top left;
-    transform: rotate(90deg);
-    overflow: visible;
-    z-index: 11;
-  }
+  stroke: #fff;
+  stroke-width: 3px;
+  fill: none;
+}
+
+.stringSvg {
+  position: relative;
+  width: 85%;
+  margin-left: 12%;
+  height: calc(100% + 690px);
+  overflow: visible;
+  z-index: 2;
+  pointer-events: none;
+}

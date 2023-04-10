@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { scrollReducer } from './scrollSlice'
-import { viewReducer } from './viewSlice'
+import viewReducer from './viewSlice'
 
 const store = configureStore({
     reducer : {
