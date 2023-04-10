@@ -24,20 +24,20 @@ const TuningPegSvg = (
 
 		<svg
 			viewBox="0 0 100 100"
-			width={86}
-			height={79}
+			width={90}
+			height={80}
 			fill="none"
 			overflow="visible"
 			xmlns="http://www.w3.org/2000/svg"
 			ref={ref}
 			{...props}
 		>
-			<text x="0" y="60"
+			<text x="0" y="65"
 				className={styles.labelText}
-				style={
-					flip ? { "transform": "scaleX(-1) translateX(10px)" } :
-						{ "transform": "translateX(-10px)" }}
-				textAnchor={flip ? "start" : "end"}
+				style={{
+					"transform": `translateX(-10px) scaleX(${flip})`
+				}}
+				textAnchor={flip == "-1" ? "start" : "end"}
 			>{label}</text>
 			<g id={"tuningPeg"+index} style={{"pointerEvents":"all"}} onClick={()=>{
 				if (!turned) {

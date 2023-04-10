@@ -112,7 +112,7 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
                 begin={`indefinite`}
             />
 
-            <animate attributeName='d' dur='400ms' ref={waveRef}
+            <animate attributeName='d' dur='700ms' ref={waveRef}
                 values={clickAnim.values}
                 keyTimes={clickAnim.times}
                 keySplines={clickAnim.splines}

@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
-    "next": "12.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "next": "^13.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "sass": "^1.56.2"
   },
@@ -20,7 +20,7 @@
     "@types/node": "^18.8.4",
     "@types/react": "^18.0.21",
     "eslint": "8.23.1",
-    "eslint-config-next": "12.3.1",
+    "eslint-config-next": "^13.3.0",
     "typescript": "^4.8.4"
   }
 }

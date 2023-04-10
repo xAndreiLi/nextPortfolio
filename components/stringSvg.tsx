@@ -13,6 +13,8 @@ import { StringPath, StringPathType } from './stringPath'
 export interface StringSvgType {
   stringRefs: RefObject<StringPathType>[] | undefined
   stringRef: (ind: number) => StringPathType | null
+  pluck: (ind: number, delay: number) => void
+  pluckSeq: (seq: Array<number>, interval: number, delay?: number) => void
 }
 
 interface Props {
@@ -41,10 +43,9 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
       timeouts.shift()
     }, delay)
   }
-  const pluckSeq = useCallback((seq: Array<number>, interval: number, delay?: number) => {
+  const pluckSeq = useCallback((seq: Array<number>, interval: number, delay: number = 0) => {
     const timeouts = timeoutRef.current
-    let time = 0
-    if (delay) time = delay
+    let time = delay
     seq.forEach((i) => {
       timeouts.push(pluck(i, time))
       time += interval
@@ -60,7 +61,9 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
       if (!strings) return null;
       const string = strings[ind].current
       return string
-    }
+    },
+    pluck: pluck,
+    pluckSeq: pluckSeq
   }))
 
   return (
