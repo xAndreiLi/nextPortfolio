@@ -2,7 +2,7 @@ import { GetStaticProps, NextPage } from 'next'
 import { Provider } from 'react-redux'
 
 import Home from '../components/home'
-import store from '../app/store'
+import store from '../util/store'
 
 export const Root: NextPage = () => {
 

@@ -1,12 +1,24 @@
 import '../styles/globals.scss';
 import { AppProps } from 'next/app';
-import { Exo_2 } from 'next/font/google'
+import { Space_Grotesk, Great_Vibes, Dancing_Script, Inter } from 'next/font/google'
 
-const exo_2 = Exo_2({subsets:['latin']})
+export const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
+export const greatVibes = Great_Vibes({
+  subsets: ['latin'],
+  weight: "400",
+})
+export const dancingScript = Dancing_Script({subsets: ['latin']})
+export const inter = Inter({ subsets: ['latin'] })
+
+export const fonts = [
+  spaceGrotesk.className, greatVibes.className, 
+  dancingScript.className, inter.className
+]
+export const fontClass = fonts.join(' ')
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={exo_2.className}>
+    <main className={fontClass}>
       <Component {...pageProps} />
     </main>
   )

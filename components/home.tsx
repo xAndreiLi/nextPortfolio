@@ -2,106 +2,102 @@ import { GetStaticProps, NextPage } from 'next'
 import { useRef, useEffect } from 'react'
 
 import styles from '../styles/Home.module.scss'
-import HeadSvg from './headSvg'
-import BodySvg from './bodySvg'
-import TuningPegSvg from './tuningPegSvg'
 import { StringSvg, StringSvgType } from './stringSvg'
-import content from '../data/content'
+import { greatVibes, spaceGrotesk, dancingScript, inter } from '../pages/_app'
 
-export const Home: NextPage = ({}) => {
+export const Home: NextPage = ({ }) => {
+  const stringSvgRef = useRef<StringSvgType>(null)
 
-  const stringRef = useRef<StringSvgType>(null)
-  const contentData = content.map((val, ind) => {
+  if (stringSvgRef.current) {
+    const svgBox = stringSvgRef.current.getBBox()
+    console.log(svgBox)
+  }
 
-    const title = (
-    <div className={styles.content}>
-      <h1>{val.name}</h1>
-      <h2>{val.date}</h2>
-      <a href={val.links[0].src}>{val.links[0].name}</a>
-    </div>
-    )
-    const desc = (
-      <div className={styles.content}>
-        <h3>{val.desc[0]}</h3>
-        <h3>{val.desc[1]}</h3>
-      </div>
-    )
+  let winWidth = 1920, winHeight = 1080
+  if (typeof window !== 'undefined') {
+    winWidth = window.innerWidth
+    winHeight = window.innerHeight
+  }
 
-    if(ind%2==0) return [title, desc]
-    return [desc, title]
-    
-  })
+  const stringTop = (Number(styles.stringTop) + Number(styles.containerHeight) / 2) * winHeight / 100
+  const stringHeight = Number(styles.stringHeight) * winHeight / 100
+  const rectHeight = stringHeight / 6
+  const midpoint = rectHeight / 2
+  const boundaries = [stringTop]
+  for (let i = 1; i <= 6; i++) {
+    boundaries.push(i * rectHeight + stringTop)
+  }
 
-  useEffect(() => {
-    stringRef.current?.pluckSeq([0, 1, 2, 3, 4, 5], 200)
-  }, [stringRef])
+  console.log(boundaries)
 
-  const pegLabelsLeft = [
-    "Work", "Experience", "Blog",
-  ]
-  const pegLabelsRight = [
-    "Sort New", "Sectioned", "Sound On"
-  ]
+  const stringRects = []
+  for (let i = 0; i < 6; i++) {
+    const stringRect = (<div key={i}
+      onMouseMove={(event) => {
+        if (!stringSvgRef.current) return;
+        const ind = i
 
-  const tuningPegsLeft = pegLabelsLeft.map((label, index) => {
-    return (
-      <TuningPegSvg key={index} label={label} flip={"1"} index={index} style={{
-        "transform": "translateX(30%)",
-      }} />
-    )
-  })
+        const xPos = event.clientX
+        const yPos = event.clientY
+        const xSvg = xPos * 100 / winWidth
+        const ySvg = (yPos - stringTop) * 100 / stringHeight
 
-  const tuningPegsRight = pegLabelsRight.map((label, index) => {
-    return (
-      <TuningPegSvg key={index + 3} label={label} flip={"-1"} index={index + 3} style={{
-        "transform": "scaleX(-1) translateX(30%)",
-      }} />
-    )
-  })
+        const offsetY = event.nativeEvent.offsetY
+        let direction = 0 // none
+        //Mouse Moving up & Below the midway point, don't drag
+        if (event.movementY < 0 && offsetY > midpoint) return;
+        else direction = -1 // up
+        //Mouse Moving down & Above the midway point, don't drag
+        if (event.movementY > 0 && offsetY < midpoint) return;
+        else direction = 1 // down
+        if (direction == 0) return;
+        stringSvgRef.current.drag(ind, xSvg, ySvg, direction)
+      }} onMouseOut={(event) => {
+        if (!stringSvgRef.current) return;
+        const xPos = event.clientX
+        const xSvg = xPos * 100 / winWidth
+        const ind = i
+        stringSvgRef.current.pluck(ind, 0, xSvg, event.movementY > 0 ? 1 : -1)
+
+        // const ySvg = (yPos - stringTop) * 100 / stringHeight
+        // 
+        // let direction = 0
+        // if (event.movementY > 0) { // Going Down
+        //   direction = 1
+        //   for (let i = 0; i < boundaries.length; i++) {
+        //     if (yPos > boundaries[i]) {
+        //       ind = i
+        //     } else break;
+        //   }
+        //   if (ind == null) return;
+        //   stringSvgRef.current.pluck(ind+1, 0, xSvg, 1)
+        // } else { // Going Up
+        //   for (let i = boundaries.length - 2; i >= 0; i--) {
+        //     if (yPos < boundaries[i]) {
+        //       ind = i
+        //     } else break;
+        //   }
+        //   if (ind == null) return;
+        //   
+        // }
+        
+      }} />)
+    stringRects.push(stringRect)
+  }
 
   return (
-    <div className={styles.main}>
-      <div className={styles.guitar}>
-        <div className={styles.headBoard}>
-          <div className={styles.column}>{tuningPegsLeft}</div>
-          <HeadSvg className={styles.headSvg} />
-          <div className={styles.column}>{tuningPegsRight}</div>
-        </div>
-        <div className={styles.row}>
-          <div className={styles.contentLeft}>
-            {/* <div className={styles.content}>
-              <div className={styles.nameText}>InTune</div>
-              <div className={styles.fret} />
-              <div className={styles.dateText}>Aug 2022</div>
-            </div>
-            <div className={styles.content}>
-              <div className={styles.fret} />
-              <p className={styles.contentText}>
-                Python package for splitting
-                songs into stems and blending them together.
-                Built with Spleeter and Soundboard.
-              </p>
-            </div> */}
-            {contentData[0]}
-          </div>
-          <div className={styles.fretBoard}>
-            <StringSvg ref={stringRef} />
-            <div className={styles.soundHole} />
-          </div>
-          <div className={styles.contentRight}>
-            {/* <div className={styles.content}>
-              <p className={styles.contentText}>
-                Social Media App built on React Native for sharing music with friends.
-              </p>
-            </div>
-            <div className={styles.content}>
-              <div className={styles.nameText}>MashSong</div>
-              <div className={styles.dateText}>Sep 2022</div>
-            </div> */}
-            {contentData[1]}
-          </div>
-        </div>
-        <BodySvg className={styles.bodySvg} />
+    <div className={styles.main + ' ' + inter.className}>
+      <div className={styles.stringContainer}>
+        <StringSvg ref={stringSvgRef} />
+        {stringRects}
+      </div>
+      <div className={styles.about}>
+        <p>
+          li, andrei. Creating unique designs and projects.
+          Enthralled by innovation, music, and art.
+          Inspired to do what has not been done.
+          Previously at Boeing, now graduating and seeking employment.
+        </p>
       </div>
     </div>
   )

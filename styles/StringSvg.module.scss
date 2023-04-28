@@ -1,17 +1,27 @@
+@use "styles/var.module";
 @use "styles/Home.module";
 
-.stringPath {
-  stroke: #fff;
-  stroke-width: 3px;
+.stringMask {
+  stroke: black;
+  stroke-width: 4px;
   fill: none;
 }
 
+.stringPath {
+  stroke: var.$text-color;
+  stroke-width: 2px;
+  fill: none;
+}
+
+
 .stringSvg {
-  position: relative;
-  width: 85%;
-  margin-left: 12%;
-  height: calc(100% + 690px);
+  position: absolute;
+  top: calc(Home.$containerHeight/2) + vh;
+  left: 0;
+  width: 100%;
+  height: Home.$stringHeight + vh;
   overflow: visible;
-  z-index: 2;
   pointer-events: none;
+  z-index: 2;
+  background-color: var.$dark-color;
 }

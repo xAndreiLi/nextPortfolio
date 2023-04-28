@@ -1,125 +1,70 @@
+import { motion, useMotionTemplate, useMotionValue, animate } from 'framer-motion'
+
 import styles from '../styles/StringSvg.module.scss'
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, MutableRefObject, forwardRef, useImperativeHandle, ForwardedRef, useState } from 'react'
+import { useRef, forwardRef, useImperativeHandle, ForwardedRef, useCallback } from 'react'
 
-export interface StringPathType {
-    hover: Function
-    unhover: Function
-    click: Function
+
+export interface StringPathType{
+    hover(xPos: number, yPos: number, direction: number): void
+    click(xPos: number, direction?: number): void
+    pathRef(): SVGPathElement | null
 }
 
 interface Props {
     ind: number
-}
-
-interface AnimType {
-    values: string
-    times: string
-    splines: string
+    type: string
 }
 
 const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
-    const { ind } = props
+    const { ind, type } = props
 
-    const waveOn = useRef(false)
-    const isHovered = useRef(false)
-    const hoverRef = useRef<SVGAnimateElement>(null)
-    const returnRef = useRef<SVGAnimateElement>(null)
-    const waveRef = useRef<SVGAnimateElement>(null)
+    const pathRef = useRef<SVGPathElement>(null)
+    const xPosVal = useMotionValue(50)
+        
+    const gap = 17
+    const pos = gap * ind + 7.5
 
-    const gap = 18
-    const curve = (amp: number) => {
-        return `M ${(ind) * gap},0 C ${(ind) * gap},0 ${amp + (ind * gap)},50 ${ind * gap},100`
-    }
+    const posVal = useMotionValue(pos)
 
-    const curveAnim = (start: number, end: number): AnimType => {
-        var values = ''
-        var times = ''
-        var splines = '0 0 1 1; '
-        const interval = (end - start) / 5
-        for (let i = 0; i <= 5; i++) {
-            values += curve(start + (interval * i)) + "; "
-            times += (i / 5).toFixed(3) + '; '
-        }
-        values = values.slice(0, -2)
-        times = times.slice(0, -2)
-        splines = splines.repeat(5).slice(0, -2)
-        return {values, times, splines}
-    }
+    const hover = useCallback((xPos: number, yPos: number, direction: number) => {
+        // animate(posVal, yPos, {
+        //     type: 'inertia', min: yPos-.1, max: yPos+.1,
+        //     bounceStiffness: 10000, bounceDamping: 1000,
+        //     power: .2, velocity: 1000, timeConstant: 100
+        // })
+        // animate(xPosVal, xPos, {
+        //     type: 'inertia', min: xPos-.2, max: xPos+.2,
+        //     bounceStiffness: 4000, bounceDamping: 1000,
+        //     power: .2, velocity: 1000, timeConstant: 500,
+        // })
+        posVal.jump(yPos)
+        xPosVal.jump(xPos)
+    }, [posVal, xPosVal])
 
-    const waveAnim = (): AnimType => {
-        var values = curve(3) + curve(6) + curve(12) + curve(6)
-        for (let i = 10; i > 0; i--) {
-            values += curveAnim(0, -i).values + '; '
-            values += curveAnim(-i, 0).values + '; '
-            values += curveAnim(0, i).values + '; '
-            values += curveAnim(i, 0).values
-        }
-        var times = ''
-        var splines = '0 0 1 1; '
-        const count = values.split(';').length
-        for (let i = 0; i < count; i++) {
-            times += (i / (count - 1)).toFixed(3) + '; '
-        }
-        times = times.slice(0, -2)
-        splines = splines.repeat(count - 1).slice(0, -2)
-        return {values, times, splines}
-    }
+    const click = useCallback((xPos: number, direction: number = 1) => {
+        xPosVal.set(xPos)
+        posVal.set(pos+(10*direction))
+        animate(posVal, pos, {
+            type: "inertia", min: pos-2, max: pos+2,
+            velocity: 90000, power: 1,
+            bounceStiffness: 4000, bounceDamping: 5, 
+        })
+    }, [pos, posVal, xPosVal])
 
     useImperativeHandle(ref, () => ({
-        hover: () => {
-            const hoverAnim = hoverRef.current
-            if (waveOn.current || !hoverAnim) return;
-            hoverAnim.beginElement()
-            isHovered.current = true
-        },
-        unhover: () => {
-            const unhover = returnRef.current
-            if (waveOn.current || !isHovered.current || !unhover) return;
-            unhover.beginElement()
-            isHovered.current = false
-        },
-        click: () => {
-            const click = waveRef.current
-            if (!click) return;
-            waveOn.current = true
-            isHovered.current = false
-            click.beginElement()
-            setTimeout(() => waveOn.current = false, 350)
-        }
-    }))
-
-    const hoverAnim = curveAnim(0, 8)
-    const returnAnim = curveAnim(8, 0)
-    const clickAnim = waveAnim()
+        hover: hover,
+        click: click,
+        pathRef: () => pathRef.current
+    }), [pathRef, click, hover])
+    
+    const amp = useMotionTemplate`M 0,${pos} C 0,${pos} ${xPosVal},${posVal} 100,${pos}`
 
     return (
-        <path className={styles.stringPath}
-            vectorEffect="non-scaling-stroke" d={curve(0)}>
-            <animate attributeName='d' dur="100ms" ref={hoverRef}
-                values={hoverAnim.values}
-                keyTimes={hoverAnim.times}
-                keySplines={hoverAnim.splines}
-                calcMode="spline" fill='freeze'
-                begin={`indefinite`}
-            />
-
-            <animate attributeName='d' dur="100ms" ref={returnRef}
-                values={returnAnim.values}
-                keyTimes={returnAnim.times}
-                keySplines={returnAnim.splines}
-                calcMode="spline" fill='freeze'
-                begin={`indefinite`}
-            />
-
-            <animate attributeName='d' dur='700ms' ref={waveRef}
-                values={clickAnim.values}
-                keyTimes={clickAnim.times}
-                keySplines={clickAnim.splines}
-                calcMode="spline" fill='freeze'
-                begin={`indefinite`}
-            />
-        </path>
+        <motion.path ref={pathRef}
+            className={type == "string" ? 
+                styles.stringPath : styles.stringMask }
+            vectorEffect="non-scaling-stroke" d={amp} />
     )
 }
 
