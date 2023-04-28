@@ -37,6 +37,7 @@ $text-color: #F2E9E4;
 $contentPadding: 20px;
 $contentWidth: 30%;
 $contentMargin: 80px;
+
 .contentLeft {
   width: $contentWidth;
   display: flex;
@@ -46,6 +47,7 @@ $contentMargin: 80px;
   margin-top: $contentMargin;
   text-align: right;
 }
+
 .contentRight {
   width: $contentWidth;
   display: flex;
@@ -55,15 +57,48 @@ $contentMargin: 80px;
   margin-top: $contentMargin;
   text-align: left;
 }
+
 .content {
   position: relative;
   width: 100%;
-  height: 175px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   align-items: inherit;
   justify-content: center;
   text-align: inherit;
+  fill: #fff;
+
+  h1 {
+    font-size: 1.15em;
+    text-anchor: middle;
+  }
+
+  h2 {
+    font-size: .65em;
+    margin: .15em 0 .6em 0;
+  }
+
+  h3 {
+    font-size: .5em;
+    text-align: inherit;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+
+  div:nth-child(2n+1) {
+    position: absolute;
+    height: 5px;
+    width: 185px;
+    right: -190px - $contentPadding;
+    top: 50%;
+    background-color: #fff;
+    flex-shrink: 0;
+  }
 }
 
 .fret {
@@ -110,7 +145,7 @@ $contentMargin: 80px;
   border: 12px solid white;
   border-radius: 1000px;
   background-color: $background-color;
-  transform: translate(-136px,-50px);
+  transform: translate(-136px, -50px);
   z-index: 0;
 }
 
@@ -129,16 +164,4 @@ $contentMargin: 80px;
   fill: #fff;
   font-size: 1.15em;
   text-anchor: middle;
-}
-
-.contentText {
-  fill: #fff;
-  font-size: .5em;
-  text-align: inherit;
-}
-
-.dateText {
-  fill: #fff;
-  font-size: .65em;
-  margin: .15em 0 .6em 0;
 }
