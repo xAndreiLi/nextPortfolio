@@ -5,9 +5,11 @@ const Header: NextPage = ({ }) => {
 
 	return (
 		<div className={styles.HeaderContainer}>
-			<a>Work</a>
-			<a>Home</a>
-			<a>About</a>
+			<div className={styles.NavContainer}>
+				<a>Work</a>
+				<a>Home</a>
+				<a>About</a>
+			</div>
 		</div>
 	)
 }

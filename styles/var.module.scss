@@ -1,8 +1,15 @@
-$background-color: #111418;
-$light-color: #B9C0C1;
-$dark-color: #49505A;
-$text-color: #EEEEEE;
-$accent-color: #F0BC42;
+// $background-color: #111418;
+// $light-color: #B9C0C1;
+// $dark-color: #49505A;
+// $text-color: #EEEEEE;
+// $accent-color: #FF2ECC;
+
+$background-color: #18191C;
+$light-color: #BFC8DE;
+$dark-color: #303338;
+$text-color: #9EA6B8;
+$accent-color: #CA3E47;
+$accent-color2: #053F5E;
 
 :export {
   backgroundColor: $background-color;
@@ -10,4 +17,5 @@ $accent-color: #F0BC42;
   darkColor: $dark-color;
   textColor: $text-color;
   accentColor: $accent-color;
+  accentColor2: $accent-color2;
 }

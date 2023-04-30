@@ -7,6 +7,7 @@ import { greatVibes, spaceGrotesk, dancingScript, inter } from '../pages/_app'
 
 export const Home: NextPage = ({ }) => {
   const stringSvgRef = useRef<StringSvgType>(null)
+  const dragging = false
 
   const stringRects = []
   for (let i = 0; i < 6; i++) {
@@ -15,20 +16,9 @@ export const Home: NextPage = ({ }) => {
         const stringSvg = stringSvgRef.current
         const boundRect = stringSvg?.getBoundingClientRect()
         if (!(stringSvg && boundRect)) return;
-
-        const rect = event.currentTarget
-
         const xPos = event.clientX, yPos = event.clientY
         const xSvg = xPos * 100 / window.innerWidth
         const ySvg = (yPos - boundRect.y) * 100 / boundRect.height
-
-        const offsetY = event.nativeEvent.offsetY
-        let direction = 0 // none
-        //Mouse Moving up & Above the midway point, drag
-        if (event.movementY < 0 && offsetY <= rect.clientHeight/2) direction = -1;
-        //Mouse Moving down & Below the midway point, drag
-        if (event.movementY > 0 && offsetY >= rect.clientHeight/2) direction = 1;
-        if (direction == 0) return;
         stringSvg.drag(i, xSvg, ySvg)
       }} onMouseOut={(event) => {
         if (!stringSvgRef.current) return;

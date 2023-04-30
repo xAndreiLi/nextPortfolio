@@ -24,7 +24,7 @@
   text-align: left;
   p {
     width: 35vw;
-    font-size: .65em;
+    font-size: .55em;
   }
 }
 
@@ -39,6 +39,9 @@ $containerHeight: 20;
   width: 100vw;
   height: stringHeight + vh;
   pointer-events: all;
+  border: 2px solid var.$dark-color;
+  border-left: 0;
+  border-right: 0;
   overflow: hidden;
   div {
     width: 100%;

@@ -93,8 +93,8 @@ const StringSvgComp: ForwardRefRenderFunction<StringSvgType, Props> = (props: Pr
   const frets = []
   for(let i = 0; i < numFrets; i++){
     const step = 100 / numFrets
-    frets.push(<rect key={i} x={step*i + margin} y="0" rx="1" ry="1"
-    width=".5" height="100" fill={variables.lightColor}/>)
+    frets.push(<rect key={i} x={step*i + margin} y="0" rx=".5" ry=".5"
+    width=".4" height="100" fill={variables.darkColor}/>)
   }
 
   const stringMask = stringMaskRefs.current.map((val, ind) => {
@@ -108,7 +108,7 @@ const StringSvgComp: ForwardRefRenderFunction<StringSvgType, Props> = (props: Pr
 
   const nameText = "Andrei"
   const nameTextAttributes = {
-    textLength: "40", lengthAdjust: "spacingAndGlyphs",
+    textLength: "37", lengthAdjust: "spacingAndGlyphs",
     fontSizeAdjust: ".85", y: "89", fontWeight: "700"
   }
 
@@ -129,13 +129,17 @@ const StringSvgComp: ForwardRefRenderFunction<StringSvgType, Props> = (props: Pr
         </mask>
       </defs>
       {frets}
-      <ellipse cx="80" cy="50" rx=".98" ry="6.8" fill={variables.backgroundColor}/>
-      <ellipse cx="80" cy="50" rx=".75" ry="5.0" fill={variables.textColor}/>
+      <ellipse cx="80" cy="50.5" rx=".98" ry="6.8" fill={variables.darkColor}/>
+      <ellipse cx="80" cy="50.5" rx=".75" ry="5.0" fill={variables.backgroundColor}/>
+      <ellipse cx="20" cy="16" rx=".98" ry="6.8" fill={variables.darkColor}/>
+      <ellipse cx="20" cy="16" rx=".75" ry="5.0" fill={variables.backgroundColor}/>
+      <ellipse cx="20" cy="85" rx=".98" ry="6.8" fill={variables.darkColor}/>
+      <ellipse cx="20" cy="85" rx=".75" ry="5.0" fill={variables.backgroundColor}/>
       {strings}
-      <text {...nameTextAttributes} x="30.25" fill={variables.backgroundColor}>
+      <text {...nameTextAttributes} x="32" fill={variables.backgroundColor}>
         {nameText}
       </text>
-      <text {...nameTextAttributes} x="30" mask='url(#mask)' fill={variables.textColor} >
+      <text {...nameTextAttributes} x="31.5" mask='url(#mask)' fill={variables.darkColor} >
         {nameText}
       </text>
     </svg>
