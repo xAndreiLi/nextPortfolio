@@ -1,0 +1,21 @@
+@use "sass:selector";
+@use "sass:math";
+@use "styles/var.module.scss";
+
+.WrapContainer {
+	position: relative;
+	display: flex;
+	font-size: .65em;
+	flex-wrap: wrap;
+	a {
+		text-decoration: none;
+		color: inherit;
+		font-size: inherit;
+		flex-shrink: 0;
+	}
+	p {
+		width: 100%;
+		flex-shrink: 0;
+		font-size: inherit;
+	}
+}

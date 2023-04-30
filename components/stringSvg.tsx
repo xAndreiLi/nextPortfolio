@@ -136,12 +136,12 @@ const StringSvgComp: ForwardRefRenderFunction<StringSvgType, Props> = (props: Pr
       <ellipse cx="20" cy="85" rx=".98" ry="6.8" fill={variables.darkColor}/>
       <ellipse cx="20" cy="85" rx=".75" ry="5.0" fill={variables.backgroundColor}/>
       {strings}
-      <text {...nameTextAttributes} x="32" fill={variables.backgroundColor}>
+      {/* <text {...nameTextAttributes} x="32" fill={variables.backgroundColor}>
         {nameText}
       </text>
       <text {...nameTextAttributes} x="31.5" mask='url(#mask)' fill={variables.darkColor} >
         {nameText}
-      </text>
+      </text> */}
     </svg>
   )
 }

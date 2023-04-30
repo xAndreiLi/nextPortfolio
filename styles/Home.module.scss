@@ -8,6 +8,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
   font-size: 1em;
   background-color: var.$background-color;
   color: var.$text-color;
@@ -19,39 +20,73 @@
   align-items: flex-end;
   width: 100vw;
   height: 20vh;
-  margin-top: 12vw;
-  margin-bottom: 2vw;
+  margin-top: 10vw;
   text-align: left;
+}
+
+.aboutText {
+  width: 35vw;
+  font-size: .75em;
+
   p {
-    width: 35vw;
-    font-size: .55em;
+    font-size: inherit;
+    color: var.$dark-color;
+  }
+
+  span[data-value="key"] {
+    color: var.$accent-color2;
+  }
+
+  span[data-value="syntax"] {
+    color: var.$accent-color;
+  }
+
+  a {
+    text-decoration: underline;
+    color: inherit;
+  }
+
+}
+
+.brackets {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 40vh;
+  width: 60vw;
+  height: 40vh;
+  overflow: hidden;
+  pointer-events: none;
+  span {
+    color: var.$dark-color;
+    margin-top: -5vh;
+    margin-left: -2.9vw;
+    margin-right: -2.9vw;
+    z-index: 3;
+    pointer-events: none;
   }
 }
 
-$stringTop: 25;
 $stringHeight: 30;
-$containerHeight: 20;
+
 .stringContainer {
-  display: flex;
   position: relative;
+  display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 100vw;
-  height: stringHeight + vh;
+  align-items: center;
+  width: 35.5vw;
+  height: $stringHeight + vh;
   pointer-events: all;
   border: 2px solid var.$dark-color;
   border-left: 0;
   border-right: 0;
   overflow: hidden;
+
   div {
     width: 100%;
     height: calc($stringHeight/6) + vh;
+    flex-shrink: 0;
     pointer-events: all;
   }
-}
-
-:export {
-  stringTop: $stringTop;
-  stringHeight: $stringHeight;
-  containerHeight: $containerHeight;
 }

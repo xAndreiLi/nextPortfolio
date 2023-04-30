@@ -3,6 +3,7 @@ import { useRef, useEffect } from 'react'
 
 import styles from '../styles/Home.module.scss'
 import { StringSvg, StringSvgType } from './stringSvg'
+import TextWrap from './textWrap'
 import { greatVibes, spaceGrotesk, dancingScript, inter } from '../pages/_app'
 
 export const Home: NextPage = ({ }) => {
@@ -32,19 +33,27 @@ export const Home: NextPage = ({ }) => {
 
   return (
     <div className={styles.main + ' ' + inter.className}>
-      
+
       <div className={styles.about}>
-        <p>
-          li, andrei. Creating unique designs and projects.
-          Enthralled by innovation, music, and art.
-          Inspired to do what has not been done.
-          Previously at Boeing, now graduating and seeking employment.
-        </p>
+
+        <div className={styles.aboutText}>
+          <p>
+            {"//"} Welcome!
+          </p>
+          <span data-value="key">let </span> me
+          <span data-value="syntax"> : </span> <a>Andrei</a> <span data-value="syntax"> = </span>
+        </div>
+
       </div>
-      <div className={styles.stringContainer}>
-        <StringSvg ref={stringSvgRef} />
-        {stringRects}
+      <div className={styles.brackets}>
+        <span>{"{"}</span>
+        <div className={styles.stringContainer}>
+          <StringSvg ref={stringSvgRef} />
+          {stringRects}
+        </div>
+        <span>{"}"}</span>
       </div>
+      
     </div>
   )
 }

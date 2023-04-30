@@ -47,9 +47,9 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
         pulseX1.set(xPos)
         pulseX2.set(xPos)
         animate(posVal, pos, {
-            type: "inertia", min: pos - 3, max: pos + 3,
+            type: "inertia", min: pos - 0.1, max: pos + 0.1,
             velocity: 90000, power: 1,
-            bounceStiffness: 4000, bounceDamping: 4,
+            bounceStiffness: 4000, bounceDamping: 5,
         })
         animate(pulseX1, -100, {
             duration: 1, ease: "circIn"

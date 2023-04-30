@@ -15,11 +15,10 @@
 
 .stringSvg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  width: 100vw;
   height: 100%;
   overflow: clip;
   pointer-events: none;
   background-color: var.$background-color;
+  flex-shrink: 0;
 }
