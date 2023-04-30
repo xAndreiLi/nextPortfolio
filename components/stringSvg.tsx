@@ -5,9 +5,9 @@ import {
   RefObject,
   ForwardedRef,
   useCallback,
-  Ref
+  ForwardRefRenderFunction
 } from 'react'
-import { motion, useAnimate } from 'framer-motion'
+import { SVGMotionProps, motion, useAnimate } from 'framer-motion'
 
 import variables from '../styles/var.module.scss'
 import styles from '../styles/StringSvg.module.scss'
@@ -17,17 +17,17 @@ import { greatVibes, spaceGrotesk, dancingScript } from '../pages/_app'
 export interface StringSvgType {
   stringRefs: RefObject<StringPathType>[] | undefined
   stringRef: (ind: number) => StringPathType | null
-  drag: (ind: number, xPos: number, yPos: number, direction: number) => void
+  drag: (ind: number, xPos: number, yPos: number) => void
   pluck: (ind: number, delay: number, xPos?: number, direction?: number) => void
   pluckSeq: (seq: Array<number>, interval: number, delay?: number) => void
-  getBBox(): DOMRect | undefined
+  getBoundingClientRect(): DOMRect | undefined
 }
 
 interface Props {
 
 }
 
-const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
+const StringSvgComp: ForwardRefRenderFunction<StringSvgType, Props> = (props: Props, ref: ForwardedRef<StringSvgType>) => {
   const stringRefs = useRef([
     useRef<StringPathType>(null), useRef(null),
     useRef(null), useRef(null),
@@ -42,22 +42,16 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
 
   const svgRef = useRef<SVGSVGElement>(null)
 
-  const drag = (ind: number, xPos: number, yPos: number, direction: number) => {
+  const drag = (ind: number, xPos: number, yPos: number) => {
     const string = stringRefs.current[ind].current
     const stringMask = stringMaskRefs.current[ind].current
     if(!(string && stringMask)) return;
-    string.hover(xPos, yPos, direction)
-    stringMask.hover(xPos, yPos, direction)
+    string.hover(xPos, yPos)
+    stringMask.hover(xPos, yPos)
   }
 
   const timeoutRef = useRef<Array<NodeJS.Timeout>>([])
-  // const cooldownRef = useRef<Array<number>>([0, 0, 0, 0, 0, 0])
-  // const cooldown = 10 // ms
   const pluck = (ind: number, delay: number, xPos: number = 50, direction: number = 1) => {
-    // let canPlay = true
-    const time = new Date().getTime()
-    // if(time - cooldown < cooldownRef.current[ind]) canPlay = false
-    // cooldownRef.current[ind] = time
     const timeouts = timeoutRef.current
     return setTimeout(() => {
       const string = stringRefs.current[ind].current
@@ -92,26 +86,16 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     drag: drag,
     pluck: pluck,
     pluckSeq: pluckSeq,
-    getBBox: () => svgRef.current?.getBBox(),
+    getBoundingClientRect: () => svgRef.current?.getBoundingClientRect(),
   }))
-
-  const nameTextAttributes = {
-    textLength: "40", lengthAdjust: "spacingAndGlyphs",
-    fontSizeAdjust: ".85", y: "90", fontWeight: "700"
-  }
-  const nameText = "Andrei"
-
-  const numFrets = 5
-  const margin = 10
-  const fretArray: number[] = []
+  
+  const numFrets = 5, margin = 10
+  const frets = []
   for(let i = 0; i < numFrets; i++){
     const step = 100 / numFrets
-    fretArray.push(step*i + margin)
+    frets.push(<rect key={i} x={step*i + margin} y="0" rx="1" ry="1"
+    width=".5" height="100" fill={variables.lightColor}/>)
   }
-  const frets = fretArray.map((val, ind) => {
-    return <rect key={ind} x={val} y="0" rx="1" ry="1"
-      width=".5" height="100" fill={variables.lightColor}/>
-  })
 
   const stringMask = stringMaskRefs.current.map((val, ind) => {
     const type = "mask"
@@ -122,8 +106,14 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
     return <StringPath key={ind} ind={ind} ref={val} type={type} />
   })
 
+  const nameText = "Andrei"
+  const nameTextAttributes = {
+    textLength: "40", lengthAdjust: "spacingAndGlyphs",
+    fontSizeAdjust: ".85", y: "89", fontWeight: "700"
+  }
+
   return (
-    <motion.svg ref={svgRef}
+    <svg ref={svgRef}
       className={styles.stringSvg}
       style={dancingScript.style}
       viewBox='0 0 100 100'
@@ -142,13 +132,13 @@ const StringSvgComp = (props: Props, ref: ForwardedRef<StringSvgType>) => {
       <ellipse cx="80" cy="50" rx=".98" ry="6.8" fill={variables.backgroundColor}/>
       <ellipse cx="80" cy="50" rx=".75" ry="5.0" fill={variables.textColor}/>
       {strings}
-      <text {...nameTextAttributes} x="30.15" y="91.5" fill={variables.backgroundColor}>
+      <text {...nameTextAttributes} x="30.25" fill={variables.backgroundColor}>
         {nameText}
       </text>
       <text {...nameTextAttributes} x="30" mask='url(#mask)' fill={variables.textColor} >
         {nameText}
       </text>
-    </motion.svg>
+    </svg>
   )
 }
 

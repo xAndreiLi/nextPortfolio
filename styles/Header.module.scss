@@ -1,0 +1,22 @@
+@use "sass:selector";
+@use "sass:math";
+@use "styles/var.module.scss";
+
+.HeaderContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 15vh;
+  display: flex;
+  justify-content: center;
+  gap: 4vw;
+  padding-top: 2vh;
+  background-color: var.$background-color;
+
+  a {
+    font-size: .7em;
+  }
+
+  z-index: 1;
+}

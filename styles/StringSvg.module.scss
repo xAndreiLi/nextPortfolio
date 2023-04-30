@@ -13,15 +13,13 @@
   fill: none;
 }
 
-
 .stringSvg {
   position: absolute;
-  top: calc(Home.$containerHeight/2) + vh;
+  top: 0;
   left: 0;
   width: 100%;
-  height: Home.$stringHeight + vh;
+  height: 100%;
   overflow: visible;
   pointer-events: none;
-  z-index: 2;
   background-color: var.$dark-color;
 }

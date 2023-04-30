@@ -6,7 +6,7 @@ import { useRef, forwardRef, useImperativeHandle, ForwardedRef, useCallback } fr
 
 
 export interface StringPathType{
-    hover(xPos: number, yPos: number, direction: number): void
+    hover(xPos: number, yPos: number): void
     click(xPos: number, direction?: number): void
     pathRef(): SVGPathElement | null
 }
@@ -27,17 +27,7 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
 
     const posVal = useMotionValue(pos)
 
-    const hover = useCallback((xPos: number, yPos: number, direction: number) => {
-        // animate(posVal, yPos, {
-        //     type: 'inertia', min: yPos-.1, max: yPos+.1,
-        //     bounceStiffness: 10000, bounceDamping: 1000,
-        //     power: .2, velocity: 1000, timeConstant: 100
-        // })
-        // animate(xPosVal, xPos, {
-        //     type: 'inertia', min: xPos-.2, max: xPos+.2,
-        //     bounceStiffness: 4000, bounceDamping: 1000,
-        //     power: .2, velocity: 1000, timeConstant: 500,
-        // })
+    const hover = useCallback((xPos: number, yPos: number) => {
         posVal.jump(yPos)
         xPosVal.jump(xPos)
     }, [posVal, xPosVal])

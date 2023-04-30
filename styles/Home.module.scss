@@ -7,6 +7,7 @@
   height: 100vh;
   position: relative;
   display: flex;
+  flex-direction: column;
   font-size: 1em;
   background-color: var.$background-color;
   color: var.$text-color;
@@ -17,37 +18,34 @@
   justify-content: center;
   align-items: flex-end;
   width: 100vw;
-  height: 18vh;
-  margin: 5vw;
-  text-align: center;
+  height: 20vh;
+  margin-top: 12vw;
+  margin-bottom: 2vw;
+  text-align: left;
   p {
     width: 35vw;
     font-size: .65em;
   }
 }
 
-$stringTop: 40;
+$stringTop: 25;
 $stringHeight: 30;
 $containerHeight: 20;
 .stringContainer {
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: center;
-  position: absolute;
-  left: 0;
-  top: $stringTop+vh;
   width: 100vw;
-  height: $stringHeight + $containerHeight + vh;
+  height: stringHeight + vh;
   pointer-events: all;
+  overflow: hidden;
   div {
     width: 100%;
     height: calc($stringHeight/6) + vh;
     pointer-events: all;
   }
 }
-
-
-
 
 :export {
   stringTop: $stringTop;
