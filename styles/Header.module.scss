@@ -1,0 +1,30 @@
+@use "sass:selector";
+@use "sass:math";
+@use "styles/var.module.scss";
+
+.HeaderContainer {
+  position: absolute;
+  top: -20vh;
+  left: 0;
+  width: 100vw;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4vw;
+  background-color: var.$background-color;
+  color: var.$text-color;
+
+  
+
+  z-index: 1;
+}
+
+.NavContainer {
+  width: 35vw;
+
+  a {
+    margin-right: 2vw;
+    font-size: .5em;
+  }
+}

@@ -2,85 +2,58 @@ import { GetStaticProps, NextPage } from 'next'
 import { useRef, useEffect } from 'react'
 
 import styles from '../styles/Home.module.scss'
-import HeadSvg from './headSvg'
-import BodySvg from './bodySvg'
-import TuningPegSvg from './tuningPegSvg'
 import { StringSvg, StringSvgType } from './stringSvg'
+import TextWrap from './textWrap'
+import { greatVibes, spaceGrotesk, dancingScript, inter } from '../pages/_app'
 
+export const Home: NextPage = ({ }) => {
+  const stringSvgRef = useRef<StringSvgType>(null)
+  const dragging = false
 
-export const Home: NextPage = () => {
-
-  const stringRef = useRef<StringSvgType>(null)
-
-  useEffect(() => {
-    stringRef.current?.pluckSeq([0, 1, 2, 3, 4, 5], 200)
-  }, [stringRef])
-
-  const pegLabelsLeft = [
-    "Work", "Experience", "Blog",
-  ]
-  const pegLabelsRight = [
-    "Sort New", "Sectioned", "Sound On"
-  ]
-
-  const tuningPegsLeft = pegLabelsLeft.map((label, index) => {
-    return (
-      <TuningPegSvg key={index} label={label} flip={"1"} index={index} style={{
-        "transform": "translateX(30%)",
-      }} />
-    )
-  })
-
-  const tuningPegsRight = pegLabelsRight.map((label, index) => {
-    return (
-      <TuningPegSvg key={index + 3} label={label} flip={"-1"} index={index + 3} style={{
-        "transform": "scaleX(-1) translateX(30%)",
-      }} />
-    )
-  })
+  const stringRects = []
+  for (let i = 0; i < 6; i++) {
+    const stringRect = (<div key={i}
+      onMouseMove={(event) => {
+        const stringSvg = stringSvgRef.current
+        const boundRect = stringSvg?.getBoundingClientRect()
+        if (!(stringSvg && boundRect)) return;
+        const xPos = event.clientX, yPos = event.clientY
+        const xSvg = xPos * 100 / window.innerWidth
+        const ySvg = (yPos - boundRect.y) * 100 / boundRect.height
+        stringSvg.drag(i, xSvg, ySvg)
+      }} onMouseOut={(event) => {
+        if (!stringSvgRef.current) return;
+        const xPos = event.clientX
+        const xSvg = xPos * 100 / window.innerWidth
+        const direction = event.movementY > 0 ? 1 : -1
+        stringSvgRef.current.pluck(i, 0, xSvg, direction)
+      }} />)
+    stringRects.push(stringRect)
+  }
 
   return (
-    <div className={styles.main}>
-      <div className={styles.guitar}>
-        <div className={styles.headBoard}>
-          <div className={styles.column}>{tuningPegsLeft}</div>
-          <HeadSvg className={styles.headSvg} />
-          <div className={styles.column}>{tuningPegsRight}</div>
+    <div className={styles.main + ' ' + inter.className}>
+
+      <div className={styles.about}>
+
+        <div className={styles.aboutText}>
+          <p>
+            {"//"} Welcome!
+          </p>
+          <span data-value="key">let </span> me
+          <span data-value="syntax"> : </span> <a>Andrei</a> <span data-value="syntax"> = </span>
         </div>
-        <div className={styles.row}>
-          <div className={styles.contentLeft}>
-            <div className={styles.content}>
-              <div className={styles.nameText}>InTune</div>
-              <div className={styles.fret} />
-              <div className={styles.dateText}>Aug 2022</div>
-            </div>
-            <div className={styles.content}>
-              <div className={styles.fret} />
-              <p className={styles.contentText}>
-                Python package for splitting
-                songs into stems and blending them together.
-                Built with Spleeter and Soundboard.
-              </p>
-            </div>
-          </div>
-          <div className={styles.fretBoard}>
-            <StringSvg ref={stringRef} />
-            <div className={styles.soundHole} />
-          </div>
-          <div className={styles.contentRight}>
-            <div className={styles.content}>
-              <p className={styles.contentText}>
-                Social Media App built on React Native for sharing music with friends.
-              </p>
-            </div>
-            <div className={styles.content}>
-              <div className={styles.nameText}>MashSong</div>
-              <div className={styles.dateText}>Sep 2022</div>
-            </div>
-          </div>
-        </div>
-        <BodySvg className={styles.bodySvg} />
+
       </div>
+      <div className={styles.brackets}>
+        <span>{"{"}</span>
+        <div className={styles.stringContainer}>
+          <StringSvg ref={stringSvgRef} />
+          {stringRects}
+        </div>
+        <span>{"}"}</span>
+      </div>
+      
     </div>
   )
 }

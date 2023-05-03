@@ -1,125 +1,101 @@
+import { motion, useMotionTemplate, useMotionValue, animate } from 'framer-motion'
+
 import styles from '../styles/StringSvg.module.scss'
+import variables from '../styles/var.module.scss'
 import { GetStaticProps, NextPage } from 'next'
-import { useRef, MutableRefObject, forwardRef, useImperativeHandle, ForwardedRef, useState } from 'react'
+import { useRef, forwardRef, useImperativeHandle, ForwardedRef, useCallback } from 'react'
+
 
 export interface StringPathType {
-    hover: Function
-    unhover: Function
-    click: Function
+    hover(xPos: number, yPos: number): void
+    click(xPos: number, direction?: number): void
+    pathRef(): SVGPathElement | null
 }
 
 interface Props {
     ind: number
-}
-
-interface AnimType {
-    values: string
-    times: string
-    splines: string
+    type: string
 }
 
 const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
-    const { ind } = props
+    const { ind, type } = props
 
-    const waveOn = useRef(false)
-    const isHovered = useRef(false)
-    const hoverRef = useRef<SVGAnimateElement>(null)
-    const returnRef = useRef<SVGAnimateElement>(null)
-    const waveRef = useRef<SVGAnimateElement>(null)
+    const pathRef = useRef<SVGPathElement>(null)
+    const xPosVal = useMotionValue(50)
 
-    const gap = 18
-    const curve = (amp: number) => {
-        return `M ${(ind) * gap},0 C ${(ind) * gap},0 ${amp + (ind * gap)},50 ${ind * gap},100`
-    }
+    const gap = 17
+    const pos = gap * ind + 7.5
+    const posVal = useMotionValue(pos)
 
-    const curveAnim = (start: number, end: number): AnimType => {
-        var values = ''
-        var times = ''
-        var splines = '0 0 1 1; '
-        const interval = (end - start) / 5
-        for (let i = 0; i <= 5; i++) {
-            values += curve(start + (interval * i)) + "; "
-            times += (i / 5).toFixed(3) + '; '
+    const dragRef = useRef(false)
+    const hover = useCallback((xPos: number, yPos: number) => {
+        const margin = 1
+        if ((yPos >= pos && yPos <= pos + margin) ||
+            (yPos <= pos && yPos >= pos - margin)) dragRef.current = true
+        if (dragRef.current) {
+            posVal.jump(yPos)
+            xPosVal.jump(xPos)
         }
-        values = values.slice(0, -2)
-        times = times.slice(0, -2)
-        splines = splines.repeat(5).slice(0, -2)
-        return {values, times, splines}
-    }
+    }, [pos, posVal, xPosVal])
 
-    const waveAnim = (): AnimType => {
-        var values = curve(3) + curve(6) + curve(12) + curve(6)
-        for (let i = 10; i > 0; i--) {
-            values += curveAnim(0, -i).values + '; '
-            values += curveAnim(-i, 0).values + '; '
-            values += curveAnim(0, i).values + '; '
-            values += curveAnim(i, 0).values
-        }
-        var times = ''
-        var splines = '0 0 1 1; '
-        const count = values.split(';').length
-        for (let i = 0; i < count; i++) {
-            times += (i / (count - 1)).toFixed(3) + '; '
-        }
-        times = times.slice(0, -2)
-        splines = splines.repeat(count - 1).slice(0, -2)
-        return {values, times, splines}
-    }
+    const pulseX1 = useMotionValue(0)
+    const pulseX2 = useMotionValue(0)
+    const click = useCallback((xPos: number, direction: number = 1) => {
+        dragRef.current = false
+        xPosVal.set(xPos)
+        posVal.set(pos + (10 * direction))
+        pulseX1.set(xPos)
+        pulseX2.set(xPos)
+        animate(posVal, pos, {
+            type: "inertia", min: pos - 0.1, max: pos + 0.1,
+            velocity: 90000, power: 1,
+            bounceStiffness: 4000, bounceDamping: 5,
+        })
+        animate(pulseX1, -100, {
+            duration: 1, ease: "circIn"
+        })
+        animate(pulseX2, 200, {
+            duration: 1, ease: "circIn"
+        })
+    }, [pos, posVal, xPosVal, pulseX1, pulseX2])
 
     useImperativeHandle(ref, () => ({
-        hover: () => {
-            const hoverAnim = hoverRef.current
-            if (waveOn.current || !hoverAnim) return;
-            hoverAnim.beginElement()
-            isHovered.current = true
-        },
-        unhover: () => {
-            const unhover = returnRef.current
-            if (waveOn.current || !isHovered.current || !unhover) return;
-            unhover.beginElement()
-            isHovered.current = false
-        },
-        click: () => {
-            const click = waveRef.current
-            if (!click) return;
-            waveOn.current = true
-            isHovered.current = false
-            click.beginElement()
-            setTimeout(() => waveOn.current = false, 350)
-        }
-    }))
+        hover: hover,
+        click: click,
+        pathRef: () => pathRef.current
+    }), [pathRef, click, hover])
 
-    const hoverAnim = curveAnim(0, 8)
-    const returnAnim = curveAnim(8, 0)
-    const clickAnim = waveAnim()
+    const amp = useMotionTemplate`M 0,${pos} C 0,${pos} ${xPosVal},${posVal} 100,${pos}`
+    const pulseXTemp1 = useMotionTemplate`${pulseX1}%`
+    const pulseXTemp2 = useMotionTemplate`${pulseX2}%`
+
+    const stringColor = variables.textColor
 
     return (
-        <path className={styles.stringPath}
-            vectorEffect="non-scaling-stroke" d={curve(0)}>
-            <animate attributeName='d' dur="100ms" ref={hoverRef}
-                values={hoverAnim.values}
-                keyTimes={hoverAnim.times}
-                keySplines={hoverAnim.splines}
-                calcMode="spline" fill='freeze'
-                begin={`indefinite`}
-            />
-
-            <animate attributeName='d' dur="100ms" ref={returnRef}
-                values={returnAnim.values}
-                keyTimes={returnAnim.times}
-                keySplines={returnAnim.splines}
-                calcMode="spline" fill='freeze'
-                begin={`indefinite`}
-            />
-
-            <animate attributeName='d' dur='700ms' ref={waveRef}
-                values={clickAnim.values}
-                keyTimes={clickAnim.times}
-                keySplines={clickAnim.splines}
-                calcMode="spline" fill='freeze'
-                begin={`indefinite`}
-            />
-        </path>
+        <>
+            <defs>
+                <motion.linearGradient id={`pulse${ind}`}
+                    //gradientUnits="userSpaceOnUse"
+                    gradientTransform="rotate(0)"
+                    x1={pulseXTemp1} x2={pulseXTemp2}
+                    y1='0%' y2='0%'
+                    >
+                    <stop stopColor={variables.lightColor} offset="0%"/>
+                    <stop stopColor={variables.accentColor} offset="1%" />
+                    <stop stopColor={variables.accentColor2} offset="20%"/>
+                    <stop stopColor={stringColor} offset="30%"/>
+                    <stop stopColor={stringColor} offset="70%"/>
+                    <stop stopColor={variables.accentColor2} offset="80%"/>
+                    <stop stopColor={variables.accentColor} offset="99%" />
+                    <stop stopColor={variables.lightColor} offset="100%"/>
+                </motion.linearGradient>
+            </defs>
+            <motion.path ref={pathRef}
+                className={type == "string" ?
+                    styles.stringPath : styles.stringMask}
+                stroke={type == "string" ? `url(#pulse${ind})` : 'black'}
+                vectorEffect="non-scaling-stroke" d={amp} />
+        </>
     )
 }
 
