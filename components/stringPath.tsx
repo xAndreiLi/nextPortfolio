@@ -29,14 +29,16 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
 
     const dragRef = useRef(false)
     const hover = useCallback((xPos: number, yPos: number) => {
-        const margin = 1
-        if ((yPos >= pos && yPos <= pos + margin) ||
-            (yPos <= pos && yPos >= pos - margin)) dragRef.current = true
-        if (dragRef.current) {
-            posVal.jump(yPos)
-            xPosVal.jump(xPos)
-        }
-    }, [pos, posVal, xPosVal])
+        // const margin = 1
+        // if ((yPos >= pos && yPos <= pos + margin) ||
+        //     (yPos <= pos && yPos >= pos - margin)) dragRef.current = true
+        // if (dragRef.current) {
+        //     posVal.jump(yPos)
+        //     xPosVal.jump(xPos)
+        // }
+        posVal.jump(yPos)
+        xPosVal.jump(xPos)
+    }, [posVal, xPosVal])
 
     const pulseX1 = useMotionValue(0)
     const pulseX2 = useMotionValue(0)
@@ -79,15 +81,15 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
                     gradientTransform="rotate(0)"
                     x1={pulseXTemp1} x2={pulseXTemp2}
                     y1='0%' y2='0%'
-                    >
-                    <stop stopColor={variables.lightColor} offset="0%"/>
+                >
+                    <stop stopColor={variables.lightColor} offset="0%" />
                     <stop stopColor={variables.accentColor} offset="1%" />
-                    <stop stopColor={variables.accentColor2} offset="20%"/>
-                    <stop stopColor={stringColor} offset="30%"/>
-                    <stop stopColor={stringColor} offset="70%"/>
-                    <stop stopColor={variables.accentColor2} offset="80%"/>
+                    <stop stopColor={variables.accentColor2} offset="20%" />
+                    <stop stopColor={stringColor} offset="30%" />
+                    <stop stopColor={stringColor} offset="70%" />
+                    <stop stopColor={variables.accentColor2} offset="80%" />
                     <stop stopColor={variables.accentColor} offset="99%" />
-                    <stop stopColor={variables.lightColor} offset="100%"/>
+                    <stop stopColor={variables.lightColor} offset="100%" />
                 </motion.linearGradient>
             </defs>
             <motion.path ref={pathRef}
