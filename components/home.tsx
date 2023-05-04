@@ -8,7 +8,12 @@ import { greatVibes, spaceGrotesk, dancingScript, inter } from '../pages/_app'
 
 export const Home: NextPage = ({ }) => {
   const stringSvgRef = useRef<StringSvgType>(null)
-  const dragging = false
+  let dragging = false
+
+  if(typeof window !== 'undefined'){
+    window.addEventListener("mousedown", () => { dragging = true })
+    window.addEventListener("mouseup", () => { dragging = false })
+  }
 
   const stringRects = []
   for (let i = 0; i < 6; i++) {
@@ -16,18 +21,24 @@ export const Home: NextPage = ({ }) => {
       onMouseMove={(event) => {
         const stringSvg = stringSvgRef.current
         const boundRect = stringSvg?.getBoundingClientRect()
-        if (!(stringSvg && boundRect)) return;
+        if (!(stringSvg && boundRect && dragging)) return;
         const xPos = event.clientX, yPos = event.clientY
         const xSvg = xPos * 100 / window.innerWidth
         const ySvg = (yPos - boundRect.y) * 100 / boundRect.height
         stringSvg.drag(i, xSvg, ySvg)
       }} onMouseOut={(event) => {
-        if (!stringSvgRef.current) return;
+        if (!(stringSvgRef.current && dragging)) return;
         const xPos = event.clientX
         const xSvg = xPos * 100 / window.innerWidth
         const direction = event.movementY > 0 ? 1 : -1
         stringSvgRef.current.pluck(i, 0, xSvg, direction)
-      }} />)
+      }}onMouseUp={(event) => {
+        if (!(stringSvgRef.current && dragging)) return;
+        const xPos = event.clientX
+        const xSvg = xPos * 100 / window.innerWidth
+        const direction = event.movementY > 0 ? 1 : -1
+        stringSvgRef.current.pluck(i, 0, xSvg, direction)
+      }}/>)
     stringRects.push(stringRect)
   }
 

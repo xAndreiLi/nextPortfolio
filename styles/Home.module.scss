@@ -27,6 +27,7 @@
 .aboutText {
   width: 35vw;
   font-size: .75em;
+  user-select: none;
 
   p {
     font-size: inherit;
@@ -58,6 +59,7 @@
   height: 40vh;
   overflow: hidden;
   pointer-events: none;
+  user-select: none;
   span {
     color: var.$dark-color;
     margin-top: -5vh;
