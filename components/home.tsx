@@ -2,7 +2,7 @@ import { GetStaticProps, NextPage } from 'next'
 import { useRef, useEffect, useState } from 'react'
 import { homeContainer, block, introText, blocks } from '../styles/home.css'
 import { greatVibes, spaceGrotesk, dancingScript, inter } from '../pages/_app'
-import { animate, easeInOut, easeOut, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
+import { animate, easeIn, easeInOut, easeOut, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
 import { Header } from './header'
 
 export const Home: NextPage = ({ }) => {
@@ -13,15 +13,15 @@ export const Home: NextPage = ({ }) => {
   const opacityScroll = useTransform(opacityIntro, value => 1 - value)
   const slideIntro = useTransform(opacityIntro, value => value*-25)
   const slideScroll = useTransform(opacityScroll, value => value*-25)
-  const fadeDuration = .6
+  const fadeDuration = .3
   useMotionValueEvent(scrollY, 'change', (latestValue) => {
     if (latestValue == 0 && !isIntro) {
-      animate(opacityIntro, 1, { ease: easeInOut, duration: fadeDuration })
+      animate(opacityIntro, 1, { delay: .35, ease: easeIn, duration: fadeDuration })
       setIsIntro(true)
     } else if (latestValue == 0) return;
     else if (isIntro) {
       setIsIntro(false)
-      animate(opacityIntro, 0, { ease: easeInOut, duration: fadeDuration })
+      animate(opacityIntro, 0, { ease: easeIn, duration: fadeDuration })
     }
   })
 

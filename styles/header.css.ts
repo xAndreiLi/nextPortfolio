@@ -6,10 +6,11 @@ export const headerContainer = style({
 	flexDirection: 'row',
 	width: '70vw',
 	minHeight: '10vh',
-	top: '65vh',
+	top: '60vh',
 	backgroundColor: 'black',
 	paddingLeft: '15vw',
 	paddingRight: '15vw',
+	zIndex: 2,
 })
 globalStyle(`${headerContainer} p`, {
 	fontSize: '7vh',
