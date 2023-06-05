@@ -1,5 +1,5 @@
-import '../styles/globals.scss';
-import { AppProps } from 'next/app';
+import { AppProps } from 'next/app'
+import '../styles/app.css'
 import { Space_Grotesk, Great_Vibes, Dancing_Script, Inter } from 'next/font/google'
 
 export const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })

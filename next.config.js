@@ -9,6 +9,11 @@ const withMDX = require('@next/mdx')({
   }
 })
 
+const {
+  createVanillaExtractPlugin
+} = require('@vanilla-extract/next-plugin')
+const withVanillaExtract = createVanillaExtractPlugin()
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -18,4 +23,4 @@ const nextConfig = {
   }
 }
 
-module.exports = withMDX(nextConfig)
+module.exports = withVanillaExtract(withMDX(nextConfig))
