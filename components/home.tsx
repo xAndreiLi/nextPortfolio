@@ -13,17 +13,17 @@ export const Home: NextPage = ({ }) => {
   const opacityScroll = useMotionValue(0)
   const slideIntro = useTransform(opacityIntro, value => value*-25)
   const slideScroll = useTransform(opacityScroll, value => value*-25)
-  const fadeDuration = .3
+  const fadeDuration = .35
   useMotionValueEvent(scrollY, 'change', (latestValue) => {
     if (latestValue == 0 && !isIntro) {
-      animate(opacityIntro, 1, { delay: .6, ease: easeIn, duration: fadeDuration })
+      animate(opacityIntro, 1, { delay: .75, ease: easeIn, duration: fadeDuration })
       animate(opacityScroll, 0, { delay: 0, ease: easeIn, duration: fadeDuration })
       setIsIntro(true)
     } else if (latestValue == 0) return;
     else if (isIntro) {
       setIsIntro(false)
       animate(opacityIntro, 0, { ease: easeIn, duration: fadeDuration })
-      animate(opacityScroll, 1, { delay: .5, ease: easeIn, duration: fadeDuration })
+      animate(opacityScroll, 1, { delay: .85, ease: easeIn, duration: fadeDuration })
     }
   })
 

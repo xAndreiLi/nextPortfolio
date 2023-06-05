@@ -21,7 +21,7 @@ export const Header: NextPage<Props> = ({ isIntro, scrollY }) => {
 			// animate(height, "31vh", { ease: easeInOut, duration: slideDuration })
 		} else if (latestValue == 0) return;
 		else if (isIntro){
-			animate(y, "-60vh", { ease: easeInOut, duration: slideDuration })
+			animate(y, "-60vh", { delay: .1, ease: easeInOut, duration: slideDuration })
 			// animate(height, "60vh", { ease: easeOut, duration: slideDuration })
 		}
 	})
