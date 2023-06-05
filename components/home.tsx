@@ -16,7 +16,7 @@ export const Home: NextPage = ({ }) => {
   const fadeDuration = .3
   useMotionValueEvent(scrollY, 'change', (latestValue) => {
     if (latestValue == 0 && !isIntro) {
-      animate(opacityIntro, 1, { delay: .35, ease: easeIn, duration: fadeDuration })
+      animate(opacityIntro, 1, { delay: .6, ease: easeIn, duration: fadeDuration })
       animate(opacityScroll, 0, { delay: 0, ease: easeIn, duration: fadeDuration })
       setIsIntro(true)
     } else if (latestValue == 0) return;

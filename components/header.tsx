@@ -14,14 +14,14 @@ export const Header: NextPage<Props> = ({ isIntro, scrollY }) => {
 	const y = useMotionValue("0vh")
 
 	// Header Slide Animation
-	const slideDuration = .7
+	const slideDuration = .85
 	useMotionValueEvent(scrollY, 'change', (latestValue) => {
 		if (latestValue == 0 && !isIntro){
-			animate(y, "0vh", { ease: easeOut, duration: slideDuration })
+			animate(y, "0vh", { ease: easeInOut, duration: slideDuration })
 			// animate(height, "31vh", { ease: easeInOut, duration: slideDuration })
 		} else if (latestValue == 0) return;
 		else if (isIntro){
-			animate(y, "-60vh", { ease: easeIn, duration: slideDuration })
+			animate(y, "-60vh", { ease: easeInOut, duration: slideDuration })
 			// animate(height, "60vh", { ease: easeOut, duration: slideDuration })
 		}
 	})
