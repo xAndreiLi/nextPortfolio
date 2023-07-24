@@ -1,18 +1,20 @@
 import { AppProps } from 'next/app'
-import '../styles/app.css'
+import '../styles/globals.css'
 import { Space_Grotesk, Great_Vibes, Dancing_Script, Inter } from 'next/font/google'
 
 export const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 export const greatVibes = Great_Vibes({
   subsets: ['latin'],
-  weight: "400",
+  weight: '400',
 })
-export const dancingScript = Dancing_Script({subsets: ['latin']})
+export const dancingScript = Dancing_Script({ subsets: ['latin'] })
 export const inter = Inter({ subsets: ['latin'] })
 
 export const fonts = [
-  spaceGrotesk.className, greatVibes.className, 
-  dancingScript.className, inter.className
+  spaceGrotesk.className,
+  greatVibes.className,
+  dancingScript.className,
+  inter.className,
 ]
 export const fontClass = fonts.join(' ')
 
@@ -24,4 +26,4 @@ function App({ Component, pageProps }: AppProps) {
   )
 }
 
-export default App;
+export default App
