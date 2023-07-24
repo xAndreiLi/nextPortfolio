@@ -19,7 +19,10 @@ export const block = style({
 })
 
 export const blocks = styleVariants({
-	art: [block, { background: 'blue' }]
+	art: [block, { 
+		background: 'black',
+		justifyContent: 'flex-start'
+	}]
 })
 
 export const introText = style({

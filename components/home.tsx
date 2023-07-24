@@ -11,8 +11,8 @@ export const Home: NextPage = ({ }) => {
 
   const opacityIntro = useMotionValue(1)
   const opacityScroll = useMotionValue(0)
-  const slideIntro = useTransform(opacityIntro, value => value*-25)
-  const slideScroll = useTransform(opacityScroll, value => value*-25)
+  const slideIntro = useTransform(opacityIntro, value => value * -25)
+  const slideScroll = useTransform(opacityScroll, value => value * -25)
   const fadeDuration = .35
   useMotionValueEvent(scrollY, 'change', (latestValue) => {
     if (latestValue == 0 && !isIntro) {
@@ -50,7 +50,18 @@ export const Home: NextPage = ({ }) => {
         }}>
           the space where</motion.p>
       </div>
-      <div className={blocks.art} />
+      <svg
+      viewBox='0 0 100 100' preserveAspectRatio='none'>
+        <circle
+        cx={35} cy={20} r={20}
+        fill='white'
+        style={{
+          
+        }}/>
+        <text x={35} y={10} fill='black' fontSize={7} textAnchor='middle'>
+          Tech
+        </text>
+      </svg>
 
     </div>
   )
