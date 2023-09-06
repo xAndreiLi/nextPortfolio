@@ -1,27 +1,18 @@
-import '../styles/globals.scss';
-import { AppProps } from 'next/app';
-import { Space_Grotesk, Great_Vibes, Dancing_Script, Inter } from 'next/font/google'
+import { AppProps } from 'next/app'
+import '../styles/globals.css'
+import { Roboto_Mono } from 'next/font/google'
 
-export const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
-export const greatVibes = Great_Vibes({
+export const roboto_mono = Roboto_Mono({
   subsets: ['latin'],
-  weight: "400",
+  display: 'swap',
 })
-export const dancingScript = Dancing_Script({subsets: ['latin']})
-export const inter = Inter({ subsets: ['latin'] })
-
-export const fonts = [
-  spaceGrotesk.className, greatVibes.className, 
-  dancingScript.className, inter.className
-]
-export const fontClass = fonts.join(' ')
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={fontClass}>
+    <main className={roboto_mono.className}>
       <Component {...pageProps} />
     </main>
   )
 }
 
-export default App;
+export default App

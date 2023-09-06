@@ -12,7 +12,6 @@ import { SVGMotionProps, motion, useAnimate } from 'framer-motion'
 import variables from '../styles/var.module.scss'
 import styles from '../styles/StringSvg.module.scss'
 import { StringPath, StringPathType } from './stringPath'
-import { greatVibes, spaceGrotesk, dancingScript } from '../pages/_app'
 
 export interface StringSvgType {
   stringRefs: RefObject<StringPathType>[] | undefined
@@ -115,7 +114,6 @@ const StringSvgComp: ForwardRefRenderFunction<StringSvgType, Props> = (props: Pr
   return (
     <svg ref={svgRef}
       className={styles.stringSvg}
-      style={dancingScript.style}
       viewBox='0 0 100 100'
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio='none'

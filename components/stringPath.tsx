@@ -23,8 +23,8 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
     const pathRef = useRef<SVGPathElement>(null)
     const xPosVal = useMotionValue(50)
 
-    const gap = 17
-    const pos = gap * ind + 7.5
+    const gap = 16.66
+    const pos = gap * ind + 9.5
     const posVal = useMotionValue(pos)
 
     const dragRef = useRef(false)
@@ -71,7 +71,7 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
     const pulseXTemp1 = useMotionTemplate`${pulseX1}%`
     const pulseXTemp2 = useMotionTemplate`${pulseX2}%`
 
-    const stringColor = variables.textColor
+    const stringColor = variables.darkColor
 
     return (
         <>
@@ -82,14 +82,14 @@ const StringPathComp = (props: Props, ref: ForwardedRef<StringPathType>) => {
                     x1={pulseXTemp1} x2={pulseXTemp2}
                     y1='0%' y2='0%'
                 >
-                    <stop stopColor={variables.lightColor} offset="0%" />
+                    <stop stopColor={stringColor} offset="0%" />
                     <stop stopColor={variables.accentColor} offset="1%" />
                     <stop stopColor={variables.accentColor2} offset="20%" />
                     <stop stopColor={stringColor} offset="30%" />
                     <stop stopColor={stringColor} offset="70%" />
                     <stop stopColor={variables.accentColor2} offset="80%" />
                     <stop stopColor={variables.accentColor} offset="99%" />
-                    <stop stopColor={variables.lightColor} offset="100%" />
+                    <stop stopColor={stringColor} offset="100%" />
                 </motion.linearGradient>
             </defs>
             <motion.path ref={pathRef}
