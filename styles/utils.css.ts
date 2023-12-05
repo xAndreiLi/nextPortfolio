@@ -23,19 +23,36 @@ export const header = style({
   height: '40vh',
   borderBottom: '2px solid',
   display: 'flex',
-  paddingLeft: '3vw',
   paddingTop: '3vw',
   zIndex: 2,
+  overflow: 'hidden'
 })
 
 export const button = style({
   width: '5.5vw',
   height: '2.5vw',
+  marginLeft: '3vw',
   border: '2px solid',
   borderRadius: 100,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center'
+})
+
+export const intro = style({
+  position: 'absolute',
+  bottom: '10%',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+})
+
+export const introText = style({
+  width: '400px',
+  textAlign: 'right',
+  fontSize: '2vw',
+  padding: '1vw'
 })
 
 export const body = style({
@@ -77,6 +94,7 @@ export const projectBox = style({
 export const text = style({
   fontSize: '2vw',
   textAlign: 'center',
+  flexWrap: 'wrap',
 
   selectors: {
    [`${projectBox} > &`] : {
